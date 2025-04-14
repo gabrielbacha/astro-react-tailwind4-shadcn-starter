@@ -1,0 +1,13 @@
+---
+// src/components/Navbar.astro
+import {Image} from "astro:assets";
+import {getPath, globals} from "@/config/globals";
+
+const currentPath = Astro.url.pathname;
+import ReactNavbar from "@/components/ReactNavbar";
+
+
+---
+
+
+<ReactNavbar client:load/>

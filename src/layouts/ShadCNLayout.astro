@@ -1,33 +1,22 @@
 ---
 import "@/styles/global.css";
 
+import Head from "@/components/Head.astro";
+import GTMBody from "@/components/header/GTMBody.astro";
+
+
 import NavigationMenuDemo from "@/components/navbar/NavigationMenuDemo";
 import ThemeToggle from "@/components/navbar/ThemeToggle.astro";
 import {buttonVariants} from "@/components/ui/button";
 
-import GTMBody from "@/components/header/GTMBody.astro";
-import GTMHead from "@/components/header/GTMHead.astro";
-import LenisHead from "@/components/header/lenis.astro";
+const {pathname} = Astro.url;
 
 const {title, prefetchInHead = []} = Astro.props;
 ---
 
 <html lang="en">
-	<head>
-		<meta charset="UTF-8" />
-		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<title>{title}</title>
-		<link rel="icon" href="/favicon.svg" />
-		<GTMHead />
-		<LenisHead />
+	<Head title={title} prefetchInHead={prefetchInHead} />
 
-		<link rel="dns-prefetch" href="https://fonts.gstatic.com" crossorigin />
-
-		<!-- Preload Font Awesome CSS -->
-		<link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'" />
-
-		{prefetchInHead.map((url: string) => <link rel="prefetch" href={url} />)}
-	</head>
 	<body class="bg-background min-h-screen font-sans antialiased">
 		<GTMBody />
 		<div class="relative flex min-h-screen flex-col">

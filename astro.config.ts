@@ -4,13 +4,14 @@ import mdx from "@astrojs/mdx";
 import react from "@astrojs/react";
 import sitemap from "@astrojs/sitemap";
 import icon from "astro-icon";
+import robotsTxt from "astro-robots-txt";
 
 import tailwindcss from "@tailwindcss/vite";
 
 export default defineConfig({
 	site: "https://gabrielbacha.github.io",
 	base: "/astro-react-tailwind4-shadcn-starter/",
-	integrations: [mdx(), react(), sitemap(), icon()],
+	integrations: [mdx(), react(), sitemap(), icon(), robotsTxt()],
 	vite: {
 		plugins: [tailwindcss()],
 	},
