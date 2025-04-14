@@ -8,10 +8,10 @@ import icon from "astro-icon";
 import tailwindcss from "@tailwindcss/vite";
 
 export default defineConfig({
-	//site: import.meta.env.MODE === "production" ? "https://gabrielbacha.github.io/astro-react-tailwind4-shadcn-starter/" : "http://localhost:4321",
-	//base: import.meta.env.MODE === "production" ? "/astro-react-tailwind4-shadcn-starter/" : "/",
-	site: "https://gabrielbacha.github.io",
-	base: "/astro-react-tailwind4-shadcn-starter/",
+	site: import.meta.env.MODE === "production" ? "https://gabrielbacha.github.io" : "http://localhost:4321",
+	base: import.meta.env.MODE === "production" ? "/astro-react-tailwind4-shadcn-starter/" : "/",
+	//site: "https://gabrielbacha.github.io",
+	//base: "/astro-react-tailwind4-shadcn-starter/",
 	integrations: [mdx(), react(), sitemap(), icon()],
 	vite: {
 		plugins: [tailwindcss()],
