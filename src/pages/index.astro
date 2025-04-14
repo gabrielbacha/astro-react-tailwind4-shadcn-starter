@@ -8,6 +8,13 @@ import {buttonVariants} from "@/components/ui/button";
 const title = "Astro Shadcn UI Template";
 const description = "Accessible and customizable components built with Radix UI and Tailwind CSS. Free. Open Source.";
 
+import {getAssetPath} from "@/lib/utils";
+
+
+
+const ogImage = getAssetPath("/og-image.png");
+const twImage = getAssetPath("/og-image.png");
+
 // Consolidated SEO data
 const seoData = {
 	title,
@@ -17,7 +24,7 @@ const seoData = {
 		basic: {
 			title,
 			type: "website",
-			image: new URL("/og-image.png", Astro.url),
+			image: ogImage,
 			url: Astro.url,
 		},
 		optional: {
@@ -29,7 +36,7 @@ const seoData = {
 		card: "summary_large_image",
 		title,
 		description,
-		image: new URL("/og-image.png", Astro.url),
+		image: twImage,
 	},
 };
 
