@@ -1,7 +1,7 @@
 ---
 // src/pages/index.astro
 import {globals} from "@/config/globals";
-import ShadCNLayout from "@/layouts/ShadCNLayout.astro";
+import Layout from "@/layouts/Layout.astro";
 
 import {buttonVariants} from "@/components/ui/button";
 
@@ -10,7 +10,7 @@ import {buttonVariants} from "@/components/ui/button";
 const prefetchInHead = [];
 ---
 
-<ShadCNLayout title="Astro Shadcn UI Template">
+<Layout title="Astro Shadcn UI Template">
 	<section class="mx-auto p-8 grid items-center gap-6 pb-8 pt-6 md:py-10">
 		<div class="flex max-w-[980px] flex-col items-start gap-2">
 			<h1 class="text-3xl font-extrabold leading-tight tracking-tighter md:text-4xl">
@@ -24,4 +24,4 @@ const prefetchInHead = [];
 			<a href="https://github.com/gabrielbacha/astro-react-tailwind4-shadcn-starter" target="_blank" rel="noreferrer" class={buttonVariants({variant: "outline"})}> GitHub </a>
 		</div>
 	</section>
-</ShadCNLayout>
+</Layout>

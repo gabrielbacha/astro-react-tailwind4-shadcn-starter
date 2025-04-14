@@ -3,7 +3,6 @@ import "@/styles/global.css";
 
 import Head from "@/components/Head.astro";
 import GTMBody from "@/components/header/GTMBody.astro";
-
 import Navbar from "@/components/Navbar.astro";
 
 const {pathname} = Astro.url;
@@ -11,14 +10,26 @@ const {pathname} = Astro.url;
 const {title, prefetchInHead = []} = Astro.props;
 ---
 
-<html lang="en" class="">
+<html lang="en">
 	<Head title={title} prefetchInHead={prefetchInHead} />
 
 	<body class="bg-background min-h-screen font-sans antialiased">
 		<GTMBody />
-		<Navbar />
-		<main class="main">
-			<slot />
-		</main>
+		<div class="relative flex min-h-screen flex-col">
+			<Navbar />
+
+			<main class="flex-auto">
+				<slot />
+			</main>
+			<footer class="border-t py-6 md:px-8 md:py-0">
+				<div class="flex flex-col items-center justify-between gap-4 md:h-24 md:flex-row">
+					<p class="text-muted-foreground text-center text-sm leading-loose md:text-left">
+						The source code is available on{" "}
+						<a href="https://github.com/gabrielbacha/astro-react-tailwind4-shadcn-starter" target="_blank" rel="noreferrer" class="font-medium underline underline-offset-4">GitHub</a>
+						.
+					</p>
+				</div>
+			</footer>
+		</div>
 	</body></html
 >
