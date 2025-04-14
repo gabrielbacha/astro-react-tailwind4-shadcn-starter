@@ -1,23 +1,49 @@
 ---
 // src/pages/index.astro
-import {globals} from "@/config/globals";
 import Layout from "@/layouts/Layout.astro";
 
 import {buttonVariants} from "@/components/ui/button";
 
+// SEO Configuration
+const title = "Astro Shadcn UI Template";
+const description = "Accessible and customizable components built with Radix UI and Tailwind CSS. Free. Open Source.";
 
+// Consolidated SEO data
+const seoData = {
+	title,
+	description,
+	canonical: Astro.url.href,
+	openGraph: {
+		basic: {
+			title,
+			type: "website",
+			image: new URL("/og-image.png", Astro.url),
+			url: Astro.url,
+		},
+		optional: {
+			description,
+			siteName: "Astro Shadcn UI Template",
+		},
+	},
+	twitter: {
+		card: "summary_large_image",
+		title,
+		description,
+		image: new URL("/og-image.png", Astro.url),
+	},
+};
 
 const prefetchInHead = [];
 ---
 
-<Layout title="Astro Shadcn UI Template">
-	<section class="mx-auto p-8 grid items-center gap-6 pb-8 pt-6 md:py-10">
+<Layout seoData={seoData}>
+	<section class="mx-auto grid items-center gap-6 p-8 pt-6 pb-8 md:py-10">
 		<div class="flex max-w-[980px] flex-col items-start gap-2">
-			<h1 class="text-3xl font-extrabold leading-tight tracking-tighter md:text-4xl">
+			<h1 class="text-3xl leading-tight font-extrabold tracking-tighter md:text-4xl">
 				Astro Shadcn UI Template <br class="hidden sm:inline" />
 				built with Radix UI and Tailwind CSS.
 			</h1>
-			<p class="max-w-[700px] text-lg text-muted-foreground"> Accessible and customizable components that you can copy and paste into your apps. Free. Open Source. </p>
+			<p class="text-muted-foreground max-w-[700px] text-lg"> Accessible and customizable components that you can copy and paste into your apps. Free. Open Source. </p>
 		</div>
 		<div class="flex gap-4">
 			<a href="https://ui.shadcn.com" target="_blank" rel="noreferrer" class={buttonVariants()}> Documentation </a>

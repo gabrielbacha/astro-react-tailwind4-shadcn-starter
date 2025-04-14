@@ -7,11 +7,17 @@ import Navbar from "@/components/Navbar.astro";
 
 const {pathname} = Astro.url;
 
-const {title, prefetchInHead = []} = Astro.props;
+const {
+	seoData = {},
+	prefetchInHead = []
+} = Astro.props;
 ---
 
 <html lang="en">
-	<Head title={title} prefetchInHead={prefetchInHead} />
+	<Head 
+		seoData={seoData}
+		prefetchInHead={prefetchInHead}
+	/>
 
 	<body class="bg-background min-h-screen font-sans antialiased">
 		<GTMBody />

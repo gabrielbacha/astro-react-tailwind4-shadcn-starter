@@ -2,18 +2,22 @@
 import GTMHead from "@/components/header/GTMHead.astro";
 import Lenis from "@/components/header/lenis.astro";
 
-import { SEO } from "astro-seo";
+import {SEO} from "astro-seo";
 
-const {title, prefetchInHead = []} = Astro.props;
+const {seoData = {}, prefetchInHead = []} = Astro.props;
+
+const {title} = seoData;
 ---
+
 <head>
 	<meta charset="UTF-8" />
 	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 	<title>{title}</title>
-	<link rel="icon" href="/favicon.svg" />
+	<link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96" />
+	<link rel="shortcut icon" href="/favicon.ico" />
 	<GTMHead />
 	<Lenis />
-	
+	<SEO {...seoData} />
 	<!-- Preload Font Awesome CSS -->
 	<link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'" />
 
