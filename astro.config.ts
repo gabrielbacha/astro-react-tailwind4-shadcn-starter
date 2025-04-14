@@ -9,8 +9,8 @@ import robotsTxt from "astro-robots-txt";
 import tailwindcss from "@tailwindcss/vite";
 
 export default defineConfig({
-	//site: "https://gabrielbacha.github.io",
-	//base: "/astro-react-tailwind4-shadcn-starter/",
+	site: "https://gabrielbacha.github.io",
+	base: "/astro-react-tailwind4-shadcn-starter/",
 	integrations: [mdx(), react(), sitemap(), icon(), robotsTxt()],
 	vite: {
 		plugins: [tailwindcss()],
