@@ -1,21 +1,12 @@
 ---
-// src/pages/index.astro
 import Layout from "@/layouts/Layout.astro";
-
 import {buttonVariants} from "@/components/ui/button";
+import {getAssetPath} from "@/lib/utils";
 
 // SEO Configuration
 const title = "Astro Shadcn UI Template";
 const description = "Accessible and customizable components built with Radix UI and Tailwind CSS. Free. Open Source.";
 
-import {getAssetPath} from "@/lib/utils";
-
-
-
-const ogImage = getAssetPath("og-image.png");
-const twImage = getAssetPath("og-image.png");
-
-// Consolidated SEO data
 const seoData = {
 	title,
 	description,
@@ -24,19 +15,19 @@ const seoData = {
 		basic: {
 			title,
 			type: "website",
-			image: ogImage,
+			image: getAssetPath("og-image.png"),
 			url: Astro.url,
 		},
 		optional: {
 			description,
-			siteName: "Astro Shadcn UI Template",
+			siteName: title,
 		},
 	},
 	twitter: {
 		card: "summary_large_image",
 		title,
 		description,
-		image: twImage,
+		image: getAssetPath("og-image.png"),
 	},
 };
 
