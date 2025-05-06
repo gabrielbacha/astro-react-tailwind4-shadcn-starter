@@ -12,8 +12,6 @@
     "package-lock.json": true,
     "bun.lockb": true,
     "yarn.lock": true,
-    "pnpm-lock.yaml": true,
-    "pnpm-workspace.yaml": true,
     ".prettierignore": true,
     ".expo": true,
     "expo-env.d.ts": true,
