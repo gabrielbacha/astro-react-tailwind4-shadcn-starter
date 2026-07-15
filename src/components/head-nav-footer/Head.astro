@@ -1,0 +1,32 @@
+---
+//import Lenis from "@/components/head-nav-footer/lenis.astro";
+import CustomFont from "@/components/head-nav-footer/CustomFont.astro";
+import { globals } from "@/config/globals";
+import { getAssetPath } from "@/lib/utils";
+import { GoogleTagmanager } from "@digi4care/astro-google-tagmanager";
+import { SEO } from "astro-seo";
+const gtmId = globals.gtmId;
+
+const { seoData = {}, prefetchInHead = [] } = Astro.props;
+const { title } = seoData;
+---
+
+<head>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>{title}</title>
+	<link rel="icon" type="image/png" href={getAssetPath("favicon-96x96.png")} sizes="96x96" />
+	<link rel="shortcut icon" href={getAssetPath("favicon.ico")} />
+	<GoogleTagmanager id={gtmId} />
+
+	<!-- Preload Custom fonts -->
+	<CustomFont />
+	<SEO {...seoData} />
+	<!--<Lenis />-->
+
+	<!-- Prefetch DNS for external resources -->
+	<link rel="dns-prefetch" href="https://fonts.googleapis.com" />
+	<link rel="dns-prefetch" href="https://fonts.gstatic.com" crossorigin />
+
+	{prefetchInHead.map((url: string) => <link rel="prefetch" href={url} />)}
+</head>

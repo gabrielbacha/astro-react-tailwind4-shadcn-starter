@@ -1,0 +1,16 @@
+---
+import { globals } from "@/config/globals";
+---
+
+<header class="absolute top-0 z-50 w-full backdrop-blur">
+	<div class="relative mx-auto flex h-16 items-center p-8">
+		<!-- Center the logo by absolute positioning and transform -->
+		<a href={import.meta.env.BASE_URL} class="hover:text-primary absolute left-1/2 flex -translate-x-1/2 transform items-center space-x-2">
+			<span class="logo-font inline-block text-4xl">{globals.siteName}</span>
+		</a>
+		<!-- Position the theme toggle on the right -->
+		<div class="ml-auto">
+			<!--<ThemeToggle />-->
+		</div>
+	</div>
+</header>

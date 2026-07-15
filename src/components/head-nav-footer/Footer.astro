@@ -1,0 +1,19 @@
+---
+import { globals } from "@/config/globals";
+
+const { instagram, twitter } = globals.socialMedia;
+const year = new Date().getFullYear();
+---
+
+<!-- Footer -->
+<footer class="fixed bottom-0 z-10 w-full py-6 md:px-8">
+	<div class="container mx-auto flex flex-col items-center justify-between px-4 md:flex-row">
+		<div class="text-primary/60 order-2 mt-4 text-xs md:order-1 md:mt-0 md:text-sm">
+			&copy; {year} {globals.siteName}
+		</div>
+		<div class="order-1 mb-4 flex w-full justify-between px-8 md:order-2 md:mb-0 md:w-auto md:space-x-6 md:px-0">
+			<a href={instagram} class="text-primary/60 hover:text-primary transition-colors">Instagram</a>
+			<a href={twitter} class="text-primary/60 hover:text-primary transition-colors">Twitter</a>
+		</div>
+	</div>
+</footer>

@@ -1,0 +1,27 @@
+---
+import "@/styles/global.css";
+
+import Head from "@/components/head-nav-footer/Head.astro";
+import Navbar from "@/components/head-nav-footer/Navbar.astro";
+import { globals } from "@/config/globals";
+import { GoogleTagmanagerNoscript } from "@digi4care/astro-google-tagmanager";
+const gtmId = globals.gtmId;
+
+const { seoData = {}, prefetchInHead = [], hideNavbar = false } = Astro.props;
+---
+
+<html lang="en" class="dark">
+	<Head seoData={seoData} prefetchInHead={prefetchInHead} />
+	<body class="font-sans uppercase antialiased">
+		<div class="dark:bg-background dark:text-foreground duration-1000">
+			<GoogleTagmanagerNoscript id={gtmId} />
+
+			<div class="relative flex flex-col">
+				{!hideNavbar && <Navbar />}
+				<main>
+					<slot />
+				</main>
+			</div>
+		</div>
+	</body>
+</html>

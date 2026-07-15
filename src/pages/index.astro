@@ -1,0 +1,72 @@
+---
+import { buttonVariants } from "@/components/ui/button";
+import Footer from "@/components/head-nav-footer/Footer.astro";
+import Layout from "@/layouts/Layout.astro";
+import { getAssetPath } from "@/lib/utils";
+import { globals } from "@/config/globals";
+
+// SEO Configuration
+const title = `${globals.siteName} | Coming Soon`;
+const description = "A modern, minimal coming-soon landing page. Swap this copy, the wordmark, and the buttons to make it yours.";
+const keywords = "coming soon, landing page, astro template, react, tailwind";
+
+const ogImage = getAssetPath("og-image.png");
+
+const seoData = {
+	title,
+	description,
+	canonical: Astro.url.href,
+	keywords,
+	openGraph: {
+		basic: {
+			title,
+			type: "website",
+			image: ogImage,
+			url: Astro.url,
+		},
+		optional: {
+			description,
+			siteName: globals.siteName,
+			locale: "en_US",
+		},
+	},
+	twitter: {
+		card: "summary_large_image",
+		title,
+		description,
+		image: ogImage,
+		// TODO: set your Twitter handle (e.g. "@yourhandle") if applicable
+		creator: "",
+	},
+	// JSON-LD structured data for Organization
+	structuredData: {
+		"@context": "https://schema.org",
+		"@type": "Organization",
+		name: globals.siteName,
+		description: description,
+		url: Astro.url.href,
+		logo: new URL(ogImage, Astro.url),
+		sameAs: [globals.socialMedia.twitter, globals.socialMedia.instagram],
+	},
+};
+---
+
+<Layout seoData={seoData} hideNavbar={false}>
+	<section class="flex min-h-screen flex-col items-center justify-center px-4 text-center">
+		<p class="text-muted-foreground mb-4 text-sm tracking-wide uppercase">Coming soon</p>
+		<h1 class="mb-6 text-5xl font-bold md:text-7xl">{globals.siteName}</h1>
+		<p class="text-muted-foreground mx-auto mb-10 max-w-xl text-lg">
+			A clean, minimal starter you can make your own. Replace this copy with whatever you're building.
+		</p>
+		<div class="flex flex-col gap-4 sm:flex-row">
+			<a href="https://docs.astro.build" target="_blank" rel="noopener noreferrer" class={buttonVariants({ size: "lg" })}>
+				Get started
+			</a>
+			<a href="https://github.com/withastro/astro" target="_blank" rel="noopener noreferrer" class={buttonVariants({ variant: "outline", size: "lg" })}>
+				Learn more
+			</a>
+		</div>
+	</section>
+
+	<Footer />
+</Layout>
