@@ -1,6 +1,7 @@
 ---
 import CustomFont from "@/components/head-nav-footer/CustomFont.astro";
 import { siteConfig } from "@/config/site";
+import { PUBLIC_GTM_ID } from "astro:env/client";
 import { getAssetPath } from "@/lib/utils";
 import type { SeoData } from "@/types/seo";
 
@@ -19,6 +20,7 @@ const imageAlt = seo.imageAlt ?? `${siteConfig.name} social preview`;
 const robots = `${seo.noindex ? "noindex" : "index"}, ${seo.nofollow ? "nofollow" : "follow"}`;
 const structuredData = seo.structuredData ? JSON.stringify(seo.structuredData).replaceAll("<", "\\u003c") : undefined;
 const { dark: darkThemeColor, light: lightThemeColor } = siteConfig.themeColor;
+const gtmId = PUBLIC_GTM_ID || siteConfig.gtmId;
 ---
 
 <head>
@@ -77,8 +79,8 @@ const { dark: darkThemeColor, light: lightThemeColor } = siteConfig.themeColor;
 
 	{structuredData && <script is:inline type="application/ld+json" set:html={structuredData} />}
 	{
-		siteConfig.gtmId && (
-			<script is:inline define:vars={{ gtmId: siteConfig.gtmId }}>
+		gtmId && (
+			<script is:inline define:vars={{ gtmId }}>
 				((window, document, scriptTag, dataLayerName, containerId) => {
 					window[dataLayerName] = window[dataLayerName] || [];
 					window[dataLayerName].push({ "gtm.start": Date.now(), event: "gtm.js" });

@@ -6,6 +6,7 @@ import Head from "@/components/head-nav-footer/Head.astro";
 import Navbar from "@/components/head-nav-footer/Navbar.astro";
 import { siteConfig } from "@/config/site";
 import type { SeoData } from "@/types/seo";
+import { PUBLIC_GTM_ID } from "astro:env/client";
 
 interface Props {
 	seo?: SeoData;
@@ -15,6 +16,7 @@ interface Props {
 }
 
 const { seo, prefetchInHead = [], hideNavbar = false, hideFooter = false } = Astro.props;
+const gtmId = PUBLIC_GTM_ID || siteConfig.gtmId;
 ---
 
 <html lang={siteConfig.language}>
@@ -27,10 +29,10 @@ const { seo, prefetchInHead = [], hideNavbar = false, hideFooter = false } = Ast
 			Skip to content
 		</a>
 		{
-			siteConfig.gtmId && (
+			gtmId && (
 				<noscript>
 					<iframe
-						src={`https://www.googletagmanager.com/ns.html?id=${encodeURIComponent(siteConfig.gtmId)}`}
+						src={`https://www.googletagmanager.com/ns.html?id=${encodeURIComponent(gtmId)}`}
 						height="0"
 						width="0"
 						style="display:none;visibility:hidden"

@@ -88,6 +88,18 @@ export const siteConfig = {
 - Social links are optional and are not rendered until valid URLs are configured.
 - GTM remains disabled while `gtmId` is empty.
 
+### Environment variables
+
+Deployment-specific values can override `siteConfig` without code changes. All are optional and public build-time values (see `.env.example`):
+
+| Variable          | Overrides          | Example                           |
+| ----------------- | ------------------ | --------------------------------- |
+| `PUBLIC_SITE_URL` | `siteConfig.url`   | `https://your-username.github.io` |
+| `PUBLIC_BASE`     | `siteConfig.base`  | `/your-repo/`                     |
+| `PUBLIC_GTM_ID`   | `siteConfig.gtmId` | `GTM-XXXXXXX`                     |
+
+Locally, copy `.env.example` to `.env`. On GitHub Pages, set them as repository Actions **variables**; the deploy workflow passes them to the build. `PUBLIC_GTM_ID` is validated through Astro's typed `astro:env` schema.
+
 ### Homepage and SEO
 
 - Edit the homepage copy and CTA links in `src/pages/index.astro`.
@@ -144,12 +156,11 @@ Override the prose tokens or content rules in `src/styles/typography.css`.
 
 The site builds to static output in `dist/` and works with Vercel, Netlify, Cloudflare Pages, GitHub Pages, and similar hosts.
 
-A manual GitHub Pages workflow is included at `.github/workflows/deploy.yml`. Before using it:
+A CI + GitHub Pages workflow is included at `.github/workflows/deploy.yml`. It runs lint, format, and typecheck on every push and pull request to `main`, then builds and deploys on push (pull requests stop after the checks). Before using it:
 
-1. Set `siteConfig.url` to the deployed origin.
-2. Set `siteConfig.base` to the repository path when the site is not hosted at the domain root.
-3. Select **GitHub Actions** as the Pages source.
-4. Run the workflow manually, or enable its commented `push` trigger.
+1. Select **GitHub Actions** as the Pages source.
+2. Set `PUBLIC_SITE_URL` (deployed origin) and `PUBLIC_BASE` (repository path, e.g. `/your-repo/`) as repository Actions variables — or hardcode them in `siteConfig`.
+3. Push to `main`, or run the workflow manually from the Actions tab.
 
 ## 📄 License
 
