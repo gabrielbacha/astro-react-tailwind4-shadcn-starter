@@ -12,7 +12,7 @@
 		"no-await-in-loop": "off",
 		"typescript/no-explicit-any": "warn",
 		"typescript/no-non-null-assertion": "warn",
-		"typescript/no-unused-vars": "off",
+		"typescript/no-unused-vars": "error",
 		"unicorn/no-array-callback-reference": "off",
 		"unicorn/no-array-for-each": "off",
 		"import/no-unassigned-import": "off",
@@ -28,5 +28,15 @@
 		"jsx-a11y/control-has-associated-label": "error",
 		"jsx-a11y/no-noninteractive-element-interactions": "off"
 	},
-	"ignorePatterns": [".astro", "dist", "out", "build", "coverage", "node_modules", "**/*.tsbuildinfo", "public/**"]
+	"ignorePatterns": [
+		".astro",
+		".zcode",
+		"dist",
+		"out",
+		"build",
+		"coverage",
+		"node_modules",
+		"**/*.tsbuildinfo",
+		"public/**"
+	]
 }

@@ -1,47 +1,43 @@
 # Astro Coming Soon Template
 
-A minimal, animated "coming soon" landing page built with Astro, React, and Tailwind CSS. Features a glitching wordmark, a rotating scramble-text tagline, an email capture form, and a hidden `/egg` easter-egg terminal.
+A minimal, theme-aware coming-soon starter built with Astro, React, and Tailwind CSS 4. It ships with a centered wordmark navbar, an in-flow responsive footer, shadcn/ui-style components, MDX-ready typography, and an explicit SEO stack. Everything is statically generated, so it can deploy to any static host.
 
 ## ✨ Features
 
-- **Glitching wordmark** — PowerGlitch-driven chromatic distortion on the hero title
-- **Scramble text** — a React component that cycles through tagline phrases, decoding each character-by-character
-- **Animated background** — floating, blurred circles
-- **Email capture** — a styled form that submits to a Google Form via a hidden iframe (no backend required)
-- **Hidden easter egg** — a full-screen scramble/glitch terminal at `/egg`
-- **SEO ready** — OpenGraph, Twitter cards, JSON-LD structured data, auto-generated sitemap and `robots.txt`
-- **Dark mode** — defaults to dark, shadcn/ui-style neutral palette
-- **TypeScript** — strict mode throughout
+- **Minimal hero** — centered coming-soon headline, supporting copy, and two CTA links
+- **Responsive page shell** — accessible header, main content, footer, skip link, and mobile safe-area support
+- **Theme toggle** — follows the visitor's system preference initially and persists explicit light/dark choices without a flash
+- **SEO ready** — canonical URL, Open Graph, Twitter cards, JSON-LD, sitemap, `robots.txt`, and a generated web manifest
+- **MDX typography** — Tailwind Typography with theme-aware `.prose` defaults
+- **Google Tag Manager** — opt-in configuration; an empty ID emits no tracking markup
+- **Strict TypeScript** — typed site configuration, layout metadata, Astro components, and React helpers
+- **Static-first React** — React and shadcn are available without hydrating the current page
 
 ## 🎨 Tech Stack
 
 - **Framework:** [Astro](https://astro.build) 7.x
-- **UI:** [React](https://react.dev) 19.x (via `@astrojs/react`)
-- **Styling:** [Tailwind CSS](https://tailwindcss.com) 4.x (CSS-first `@theme` config, no `tailwind.config.js`)
-- **Components:** [shadcn/ui](https://ui.shadcn.com) ("new-york" style)
-- **Fonts:** [JetBrains Mono](https://www.jetbrains.com/lp/mono/) via [Fontsource](https://fontsource.org) (self-hosted, open-source)
-- **Animations:** custom CSS keyframes, [Motion](https://motion.dev), [PowerGlitch](https://powerglitch.com)
-- **Icons:** [Lucide](https://lucide.dev) / [astro-icon](https://github.com/natemoo-re/astro-icon)
-- **Package manager:** [pnpm](https://pnpm.io)
+- **UI:** [React](https://react.dev) 19.x through `@astrojs/react`
+- **Styling:** [Tailwind CSS](https://tailwindcss.com) 4.x with CSS-first configuration
+- **Components:** [shadcn/ui](https://ui.shadcn.com) conventions using Radix Slot and CVA
+- **Content:** [MDX](https://docs.astro.build/en/guides/integrations-guide/mdx/) and [Tailwind Typography](https://github.com/tailwindlabs/tailwindcss-typography)
+- **Fonts:** [JetBrains Mono](https://www.jetbrains.com/lp/mono/) through self-hosted Fontsource files
+- **SEO:** explicit typed metadata plus `@astrojs/sitemap` and `astro-robots-txt`
+- **Icons:** [Lucide](https://lucide.dev)
+- **Package manager:** [pnpm](https://pnpm.io) 11.11+
 
 ## 🚀 Quick Start
 
 ### Prerequisites
 
-- **Node.js** (latest LTS recommended)
-- **pnpm** — install with `npm install -g pnpm`
+- **Node.js 24** recommended; Astro requires Node.js 22.12 or newer
+- **pnpm 11.11+**
 
 ### Setup
 
 ```bash
-# 1. Clone (replace with your repo URL)
 git clone https://github.com/your-username/your-repo.git
 cd your-repo
-
-# 2. Install dependencies
 pnpm install
-
-# 3. Start the dev server
 pnpm dev
 ```
 
@@ -49,91 +45,111 @@ Open [http://localhost:4321](http://localhost:4321).
 
 ### Scripts
 
-| Script | Description |
-| --- | --- |
-| `pnpm dev` | Start the dev server with hot reloading |
-| `pnpm build` | Type-check and build for production |
-| `pnpm preview` | Preview the production build locally |
-| `pnpm lint` / `pnpm lint:fix` | Run oxlint |
-| `pnpm format` / `pnpm format:fix` | Check/fix formatting with oxfmt |
-| `pnpm typecheck` | Run `astro check` |
-| `pnpm check` | Format + lint + typecheck |
+| Script                            | Description                                        |
+| --------------------------------- | -------------------------------------------------- |
+| `pnpm dev`                        | Start the development server                       |
+| `pnpm build`                      | Type-check and create the production build         |
+| `pnpm preview`                    | Preview the production build locally               |
+| `pnpm lint` / `pnpm lint:fix`     | Check or fix JavaScript and TypeScript lint issues |
+| `pnpm format` / `pnpm format:fix` | Check or fix repository formatting                 |
+| `pnpm typecheck`                  | Run `astro check`                                  |
+| `pnpm check`                      | Run read-only formatting, lint, and type checks    |
+| `pnpm fix`                        | Apply formatting and lint fixes                    |
+
+Lefthook installs through the `prepare` script and formats or lints supported staged files before a commit.
 
 ## ⚙️ Configuration
 
-Almost everything you need to change lives in **`src/config/globals.js`**:
+Site-wide settings have one source of truth in `src/config/site.ts`:
 
-```js
-export const globals = {
-	gtmId: "",                          // TODO: Google Tag Manager container ID (e.g. "GTM-XXXXXXX")
-	socialMedia: {
-		instagram: "#",                 // TODO: your Instagram URL
-		twitter: "#",                   // TODO: your Twitter/X URL
+```ts
+export const siteConfig = {
+	name: "Your Brand",
+	description: "A modern, minimal coming-soon landing page built with Astro, React, and Tailwind CSS.",
+	url: "https://example.com",
+	base: "/",
+	language: "en",
+	locale: "en_US",
+	gtmId: "",
+	themeColor: {
+		light: "#ffffff",
+		dark: "#0a0a0a",
 	},
-	siteName: "Your Brand",             // shown in navbar, footer, SEO, JSON-LD
-	siteUrl: "https://example.com",     // used for canonical URLs, sitemap, robots.txt
+	socialMedia: {
+		instagram: undefined,
+		twitter: undefined,
+	},
 };
 ```
 
-Also set the canonical site URL in **`astro.config.ts`** (`site:` field) — this drives `@astrojs/sitemap` and `astro-robots-txt`.
+- `url` drives Astro's canonical URLs, sitemap, Open Graph URLs, and robots output.
+- `base` defaults to `/`. Set it to a repository path such as `/my-repo` when deploying a project site to GitHub Pages.
+- Routes use a consistent trailing slash so sitemap and canonical URLs remain stable at both root and subpath deployments.
+- Social links are optional and are not rendered until valid URLs are configured.
+- GTM remains disabled while `gtmId` is empty.
 
-### Email form (`src/components/forms/EmailForm.astro`)
+### Homepage and SEO
 
-The form posts to a Google Form (no backend). To wire up your own:
+- Edit the homepage copy and CTA links in `src/pages/index.astro`.
+- Page metadata uses the typed `SeoData` contract in `src/types/seo.ts`.
+- `Head.astro` emits one title, canonical metadata, social previews, theme metadata, and sanitized JSON-LD.
+- The 404 page is explicitly marked `noindex, follow`.
 
-1. Create a Google Form with a single **email** question
-2. Open the form's prefilled-link dialog and copy the URL
-3. Read the form ID (in the path) and the entry ID (`entry.XXXXX` in the query string)
-4. Set them in the script at the bottom of `EmailForm.astro`
+### Branding assets
 
-### Branding assets (`public/`)
+Replace the placeholder files in `public/` with your own favicon, app icons, and 1200×630 Open Graph image. The web manifest is generated from `siteConfig`, so names, theme colors, and base-aware icon paths stay synchronized.
 
-Placeholder assets are generated from `public/favicon.svg`. To use your own:
+### Theme and fonts
 
-- Replace `public/favicon.svg` and regenerate the PNGs (16, 32, 96, 180, 192, 512) + `favicon.ico` + `og-image.png`
-- Update `public/site.webmanifest` (`name`, `short_name`, theme color)
+- The first visit follows `prefers-color-scheme`; clicking the navbar toggle saves `light` or `dark` in local storage under the `theme` key.
+- Theme initialization runs before the stylesheet is painted, avoiding a light/dark flash.
+- Colors use shadcn-style tokens in `src/styles/global.css`.
+- JetBrains Mono loads locally through `CustomFont.astro`; replace the Fontsource import and font tokens to change it.
+- Animations and transitions are CSS-only and effectively disabled for visitors who prefer reduced motion.
 
-### Copy & wordmark
+### MDX and typography
 
-- **Hero wordmark:** reads `globals.siteName` (see `src/pages/index.astro`)
-- **Tagline phrases:** the `Scramble` `phrases` array in `src/pages/index.astro`
-- **Easter-egg message:** the `LINES` array in `src/components/effects/EggTerminal.tsx`
+MDX support is enabled. Wrap rendered content in `prose` for the theme-aware typography layer:
 
-### Theme & fonts
+```astro
+<article class="prose mx-auto">
+	<Content />
+</article>
+```
 
-- **Colors:** shadcn-style neutral palette in `src/styles/global.css` (`:root` for light, `.dark` for dark; the site defaults to dark via `class="dark"` on `<html>` in `Layout.astro`)
-- **Font:** JetBrains Mono is imported in `src/components/head-nav-footer/CustomFont.astro`. Swap the Fontsource package to change the typeface (also referenced by `--font-sans` / `--font-mono` and `.logo-font` in `global.css`)
+Override the prose tokens or content rules in `src/styles/typography.css`.
 
 ## 🏗️ Project Structure
 
-```
+```text
 .
-├── public/                      # Static assets (favicons, og-image, manifest)
+├── public/                         # Favicons, app icons, and Open Graph image
 ├── src/
 │   ├── components/
-│   │   ├── backgrounds/         # Animated background components
-│   │   ├── effects/             # Glitch, scramble, and the egg terminal
-│   │   ├── forms/               # Email capture form
-│   │   ├── head-nav-footer/     # <head>, navbar, footer, font loader
-│   │   └── ui/                  # shadcn/ui primitives (Button)
-│   ├── config/globals.js        # ← site name, URL, socials, GTM id
-│   ├── layouts/Layout.astro     # Base layout
-│   ├── lib/utils.ts             # cn(), getAssetPath(), date helpers
-│   ├── pages/
-│   │   ├── index.astro          # Homepage
-│   │   ├── egg.astro            # Hidden easter-egg terminal
-│   │   └── 404.astro            # Not-found page
-│   └── styles/global.css        # Tailwind theme tokens + custom utilities
-├── astro.config.ts              # ← site URL + integrations
-├── components.json              # shadcn/ui config
+│   │   ├── head-nav-footer/        # Head metadata, navbar, footer, font loader
+│   │   ├── ui/                     # shadcn-style React primitives
+│   │   └── utilities/              # Static-first Astro utilities such as ThemeToggle
+│   ├── config/site.ts              # Typed site-wide configuration
+│   ├── layouts/Layout.astro        # Accessible header/main/footer shell
+│   ├── lib/utils.ts                # cn() and base-aware asset paths
+│   ├── pages/                      # Homepage, 404, and generated manifest
+│   ├── styles/                     # Tailwind tokens and prose overrides
+│   └── types/seo.ts                # Typed page metadata contract
+├── astro.config.ts                 # Astro integrations and shared URL/base settings
+├── components.json                 # shadcn/ui configuration
 └── tsconfig.json
 ```
 
 ## 🚢 Deployment
 
-A GitHub Pages workflow is included at `.github/workflows/deploy.yml`. To enable automatic deploys, uncomment the `push` trigger. The workflow uses [`withastro/action`](https://github.com/withastro/action) and auto-detects pnpm from the lockfile — no further config needed.
+The site builds to static output in `dist/` and works with Vercel, Netlify, Cloudflare Pages, GitHub Pages, and similar hosts.
 
-The site builds to fully static output, so it deploys anywhere: Vercel, Netlify, Cloudflare Pages, GitHub Pages, etc.
+A manual GitHub Pages workflow is included at `.github/workflows/deploy.yml`. Before using it:
+
+1. Set `siteConfig.url` to the deployed origin.
+2. Set `siteConfig.base` to the repository path when the site is not hosted at the domain root.
+3. Select **GitHub Actions** as the Pages source.
+4. Run the workflow manually, or enable its commented `push` trigger.
 
 ## 📄 License
 

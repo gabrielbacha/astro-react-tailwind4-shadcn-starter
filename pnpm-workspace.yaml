@@ -1,5 +1,3 @@
 allowBuilds:
   esbuild: true
   lefthook: true
-minimumReleaseAgeExclude:
-  - pnpm@11.12.0

@@ -2,23 +2,17 @@ import mdx from "@astrojs/mdx";
 import react from "@astrojs/react";
 import sitemap from "@astrojs/sitemap";
 import tailwindcss from "@tailwindcss/vite";
-import icon from "astro-icon";
 import robotsTxt from "astro-robots-txt";
 import { defineConfig } from "astro/config";
 
+import { siteConfig } from "./src/config/site";
+
 export default defineConfig({
-	site: "https://example.com",
-	integrations: [mdx(), react(), sitemap(), icon(), robotsTxt()],
+	site: siteConfig.url,
+	base: siteConfig.base,
+	trailingSlash: "always",
+	integrations: [mdx(), react(), sitemap(), robotsTxt()],
 	vite: {
 		plugins: [tailwindcss()],
-	},
-	server: {
-		host: true,
-	},
-	devToolbar: {
-		enabled: false,
-	},
-	markdown: {
-		syntaxHighlight: false,
 	},
 });

@@ -1,72 +1,46 @@
 ---
 import { buttonVariants } from "@/components/ui/button";
-import Footer from "@/components/head-nav-footer/Footer.astro";
+import { siteConfig } from "@/config/site";
 import Layout from "@/layouts/Layout.astro";
 import { getAssetPath } from "@/lib/utils";
-import { globals } from "@/config/globals";
+import type { SeoData } from "@/types/seo";
 
-// SEO Configuration
-const title = `${globals.siteName} | Coming Soon`;
+const title = `${siteConfig.name} | Coming Soon`;
 const description = "A modern, minimal coming-soon landing page. Swap this copy, the wordmark, and the buttons to make it yours.";
-const keywords = "coming soon, landing page, astro template, react, tailwind";
+const siteUrl = Astro.site ?? Astro.url;
+const sameAs = Object.values(siteConfig.socialMedia).filter((url): url is string => Boolean(url));
 
-const ogImage = getAssetPath("og-image.png");
-
-const seoData = {
+const seo = {
 	title,
 	description,
-	canonical: Astro.url.href,
-	keywords,
-	openGraph: {
-		basic: {
-			title,
-			type: "website",
-			image: ogImage,
-			url: Astro.url,
-		},
-		optional: {
-			description,
-			siteName: globals.siteName,
-			locale: "en_US",
-		},
-	},
-	twitter: {
-		card: "summary_large_image",
-		title,
-		description,
-		image: ogImage,
-		// TODO: set your Twitter handle (e.g. "@yourhandle") if applicable
-		creator: "",
-	},
-	// JSON-LD structured data for Organization
+	image: getAssetPath("og-image.png"),
+	imageAlt: `${siteConfig.name} social preview`,
 	structuredData: {
 		"@context": "https://schema.org",
 		"@type": "Organization",
-		name: globals.siteName,
-		description: description,
-		url: Astro.url.href,
-		logo: new URL(ogImage, Astro.url),
-		sameAs: [globals.socialMedia.twitter, globals.socialMedia.instagram],
+		name: siteConfig.name,
+		description,
+		url: new URL(Astro.url.pathname, siteUrl).href,
+		logo: new URL(getAssetPath("android-chrome-512x512.png"), siteUrl).href,
+		...(sameAs.length > 0 ? { sameAs } : {}),
 	},
-};
+} satisfies SeoData;
 ---
 
-<Layout seoData={seoData} hideNavbar={false}>
-	<section class="flex min-h-screen flex-col items-center justify-center px-4 text-center">
+<Layout seo={seo}>
+	<section class="flex h-full min-h-[32rem] flex-col items-center justify-center px-4 py-16 text-center sm:px-6">
 		<p class="text-muted-foreground mb-4 text-sm tracking-wide uppercase">Coming soon</p>
-		<h1 class="mb-6 text-5xl font-bold md:text-7xl">{globals.siteName}</h1>
-		<p class="text-muted-foreground mx-auto mb-10 max-w-xl text-lg">
+		<h1 class="mb-6 text-5xl font-bold text-balance md:text-7xl">{siteConfig.name}</h1>
+		<p class="text-muted-foreground mx-auto mb-10 max-w-xl text-lg text-pretty">
 			A clean, minimal starter you can make your own. Replace this copy with whatever you're building.
 		</p>
 		<div class="flex flex-col gap-4 sm:flex-row">
 			<a href="https://docs.astro.build" target="_blank" rel="noopener noreferrer" class={buttonVariants({ size: "lg" })}>
-				Get started
+				Get Started
 			</a>
 			<a href="https://github.com/withastro/astro" target="_blank" rel="noopener noreferrer" class={buttonVariants({ variant: "outline", size: "lg" })}>
-				Learn more
+				Learn More
 			</a>
 		</div>
 	</section>
-
-	<Footer />
 </Layout>

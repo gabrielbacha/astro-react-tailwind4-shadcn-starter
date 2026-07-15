@@ -1,32 +1,97 @@
 ---
-//import Lenis from "@/components/head-nav-footer/lenis.astro";
 import CustomFont from "@/components/head-nav-footer/CustomFont.astro";
-import { globals } from "@/config/globals";
+import { siteConfig } from "@/config/site";
 import { getAssetPath } from "@/lib/utils";
-import { GoogleTagmanager } from "@digi4care/astro-google-tagmanager";
-import { SEO } from "astro-seo";
-const gtmId = globals.gtmId;
+import type { SeoData } from "@/types/seo";
 
-const { seoData = {}, prefetchInHead = [] } = Astro.props;
-const { title } = seoData;
+interface Props {
+	seo?: SeoData;
+	prefetchInHead?: string[];
+}
+
+const { seo = {}, prefetchInHead = [] } = Astro.props;
+const title = seo.title ?? siteConfig.name;
+const description = seo.description ?? siteConfig.description;
+const siteUrl = Astro.site ?? new URL(siteConfig.url);
+const canonical = new URL(seo.canonicalPath ?? Astro.url.pathname, siteUrl).href;
+const image = new URL(seo.image ?? getAssetPath("og-image.png"), siteUrl).href;
+const imageAlt = seo.imageAlt ?? `${siteConfig.name} social preview`;
+const robots = `${seo.noindex ? "noindex" : "index"}, ${seo.nofollow ? "nofollow" : "follow"}`;
+const structuredData = seo.structuredData ? JSON.stringify(seo.structuredData).replaceAll("<", "\\u003c") : undefined;
+const { dark: darkThemeColor, light: lightThemeColor } = siteConfig.themeColor;
 ---
 
 <head>
 	<meta charset="UTF-8" />
-	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
 	<title>{title}</title>
+	<meta name="description" content={description} />
+	<meta name="robots" content={robots} />
+	<link rel="canonical" href={canonical} />
+
+	<meta name="theme-color" content={lightThemeColor} />
+	<script is:inline define:vars={{ darkThemeColor, lightThemeColor }}>
+		(() => {
+			const storageKey = "theme";
+			let storedTheme = null;
+
+			try {
+				const value = localStorage.getItem(storageKey);
+				storedTheme = value === "light" || value === "dark" ? value : null;
+			} catch {
+				// Storage can be unavailable in privacy-restricted contexts.
+			}
+
+			const theme = storedTheme ?? (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+			const isDark = theme === "dark";
+			const root = document.documentElement;
+			root.classList.toggle("dark", isDark);
+			root.dataset.theme = theme;
+			root.style.colorScheme = theme;
+			document.querySelector('meta[name="theme-color"]')?.setAttribute("content", isDark ? darkThemeColor : lightThemeColor);
+		})();
+	</script>
+
+	<link rel="icon" type="image/svg+xml" href={getAssetPath("favicon.svg")} />
 	<link rel="icon" type="image/png" href={getAssetPath("favicon-96x96.png")} sizes="96x96" />
 	<link rel="shortcut icon" href={getAssetPath("favicon.ico")} />
-	<GoogleTagmanager id={gtmId} />
+	<link rel="apple-touch-icon" sizes="180x180" href={getAssetPath("apple-touch-icon.png")} />
+	<link rel="manifest" href={getAssetPath("site.webmanifest")} />
 
-	<!-- Preload Custom fonts -->
+	<meta property="og:title" content={title} />
+	<meta property="og:description" content={description} />
+	<meta property="og:type" content={seo.openGraphType ?? "website"} />
+	<meta property="og:url" content={canonical} />
+	<meta property="og:site_name" content={siteConfig.name} />
+	<meta property="og:locale" content={siteConfig.locale} />
+	<meta property="og:image" content={image} />
+	<meta property="og:image:alt" content={imageAlt} />
+	<meta property="og:image:width" content="1200" />
+	<meta property="og:image:height" content="630" />
+
+	<meta name="twitter:card" content="summary_large_image" />
+	<meta name="twitter:title" content={title} />
+	<meta name="twitter:description" content={description} />
+	<meta name="twitter:image" content={image} />
+	<meta name="twitter:image:alt" content={imageAlt} />
+
+	{structuredData && <script is:inline type="application/ld+json" set:html={structuredData} />}
+	{
+		siteConfig.gtmId && (
+			<script is:inline define:vars={{ gtmId: siteConfig.gtmId }}>
+				((window, document, scriptTag, dataLayerName, containerId) => {
+					window[dataLayerName] = window[dataLayerName] || [];
+					window[dataLayerName].push({ "gtm.start": Date.now(), event: "gtm.js" });
+					const firstScript = document.getElementsByTagName(scriptTag)[0];
+					const script = document.createElement(scriptTag);
+					const dataLayerQuery = dataLayerName === "dataLayer" ? "" : `&l=${dataLayerName}`;
+					script.async = true;
+					script.src = `https://www.googletagmanager.com/gtm.js?id=${containerId}${dataLayerQuery}`;
+					firstScript.parentNode.insertBefore(script, firstScript);
+				})(window, document, "script", "dataLayer", gtmId);
+			</script>
+		)
+	}
 	<CustomFont />
-	<SEO {...seoData} />
-	<!--<Lenis />-->
-
-	<!-- Prefetch DNS for external resources -->
-	<link rel="dns-prefetch" href="https://fonts.googleapis.com" />
-	<link rel="dns-prefetch" href="https://fonts.gstatic.com" crossorigin />
-
-	{prefetchInHead.map((url: string) => <link rel="prefetch" href={url} />)}
+	{prefetchInHead.map((url) => <link rel="prefetch" href={url} />)}
 </head>

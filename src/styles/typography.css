@@ -1,6 +1,27 @@
-@reference './global.css';
+.prose {
+	--tw-prose-body: var(--foreground);
+	--tw-prose-headings: var(--foreground);
+	--tw-prose-lead: var(--muted-foreground);
+	--tw-prose-links: var(--primary);
+	--tw-prose-bold: var(--foreground);
+	--tw-prose-counters: var(--muted-foreground);
+	--tw-prose-bullets: var(--muted-foreground);
+	--tw-prose-hr: var(--border);
+	--tw-prose-quotes: var(--foreground);
+	--tw-prose-quote-borders: var(--border);
+	--tw-prose-captions: var(--muted-foreground);
+	--tw-prose-kbd: var(--foreground);
+	--tw-prose-kbd-shadows: color-mix(in oklab, var(--foreground) 10%, transparent);
+	--tw-prose-code: var(--foreground);
+	--tw-prose-pre-code: var(--foreground);
+	--tw-prose-pre-bg: var(--secondary);
+	--tw-prose-th-borders: var(--border);
+	--tw-prose-td-borders: var(--border);
+	max-width: 70ch;
+	overflow-wrap: anywhere;
 
-@layer components {
-	.prose {
+	:is(h1, h2, h3, h4) {
+		text-wrap: balance;
+		scroll-margin-top: 6rem;
 	}
 }

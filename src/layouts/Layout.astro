@@ -1,27 +1,51 @@
 ---
 import "@/styles/global.css";
 
+import Footer from "@/components/head-nav-footer/Footer.astro";
 import Head from "@/components/head-nav-footer/Head.astro";
 import Navbar from "@/components/head-nav-footer/Navbar.astro";
-import { globals } from "@/config/globals";
-import { GoogleTagmanagerNoscript } from "@digi4care/astro-google-tagmanager";
-const gtmId = globals.gtmId;
+import { siteConfig } from "@/config/site";
+import type { SeoData } from "@/types/seo";
 
-const { seoData = {}, prefetchInHead = [], hideNavbar = false } = Astro.props;
+interface Props {
+	seo?: SeoData;
+	prefetchInHead?: string[];
+	hideNavbar?: boolean;
+	hideFooter?: boolean;
+}
+
+const { seo, prefetchInHead = [], hideNavbar = false, hideFooter = false } = Astro.props;
 ---
 
-<html lang="en" class="dark">
-	<Head seoData={seoData} prefetchInHead={prefetchInHead} />
-	<body class="font-sans uppercase antialiased">
-		<div class="dark:bg-background dark:text-foreground duration-1000">
-			<GoogleTagmanagerNoscript id={gtmId} />
+<html lang={siteConfig.language}>
+	<Head seo={seo} prefetchInHead={prefetchInHead} />
+	<body class="bg-background text-foreground font-sans antialiased">
+		<a
+			href="#main-content"
+			class="bg-background text-foreground focus-visible:ring-ring fixed top-3 left-3 z-[100] -translate-y-20 rounded-md px-4 py-2 text-sm font-medium shadow-lg transition-transform focus-visible:translate-y-0 focus-visible:ring-2 focus-visible:outline-none"
+		>
+			Skip to content
+		</a>
+		{
+			siteConfig.gtmId && (
+				<noscript>
+					<iframe
+						src={`https://www.googletagmanager.com/ns.html?id=${encodeURIComponent(siteConfig.gtmId)}`}
+						height="0"
+						width="0"
+						style="display:none;visibility:hidden"
+						title="Google Tag Manager"
+					></iframe>
+				</noscript>
+			)
+		}
 
-			<div class="relative flex flex-col">
-				{!hideNavbar && <Navbar />}
-				<main>
-					<slot />
-				</main>
-			</div>
+		<div class="grid min-h-dvh grid-rows-[auto_1fr_auto]">
+			{!hideNavbar && <Navbar />}
+			<main id="main-content" class="min-w-0">
+				<slot />
+			</main>
+			{!hideFooter && <Footer />}
 		</div>
 	</body>
 </html>

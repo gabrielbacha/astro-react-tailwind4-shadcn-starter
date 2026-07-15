@@ -6,20 +6,6 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 export function getAssetPath(path: string) {
-	return import.meta.env.BASE_URL + path;
-}
-
-export function formatDate(date: Date) {
-	return Intl.DateTimeFormat("en-US", {
-		year: "numeric",
-		month: "long",
-		day: "numeric",
-	}).format(date);
-}
-
-export function readingTime(html: string) {
-	const textOnly = html.replace(/<[^>]+>/g, "");
-	const wordCount = textOnly.split(/\s+/).length;
-	const readingTimeMinutes = (wordCount / 200 + 1).toFixed();
-	return `${readingTimeMinutes} min read`;
+	const base = import.meta.env.BASE_URL.endsWith("/") ? import.meta.env.BASE_URL : `${import.meta.env.BASE_URL}/`;
+	return `${base}${path.replace(/^\/+/, "")}`;
 }
