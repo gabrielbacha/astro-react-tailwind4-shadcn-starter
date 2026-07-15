@@ -1,8 +1,0 @@
-{
-	"recommendations": [
-		"oxc.oxc-vscode",
-		"bradlc.vscode-tailwindcss",
-		"astro-build.astro-vscode",
-		"editorconfig.editorconfig"
-	]
-}
