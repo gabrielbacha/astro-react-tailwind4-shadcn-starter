@@ -1,36 +1,22 @@
 {
-  "files.exclude": {
-    "node_modules": true,
-    ".gitattributes": true,
-    "LICENSE": true,
-    ".npmrc": true,
-    ".husky": true,
-    ".prettierrc": true,
-    ".lintstagedrc.json": true,
-    ".eslintignore": true,
-    ".eslintrc.js": true,
-    "package-lock.json": true,
-    "bun.lockb": true,
-    "yarn.lock": true,
-    ".prettierignore": true,
-    ".expo": true,
-    "expo-env.d.ts": true,
-    "dump.rdb": true,
-    ".ruby-version": true,
-    ".rubocop.yml": true,
-    ".rspec": true,
-    ".vercel": true,
-    ".netlify": true,
-    "dist": true,
-    "out": true,
-    "build": true,
-    ".eslintcache": true,
-    ".next": true,
-    ".nuxt": true,
-    ".cache": true,
-    "vendor": true,
-    "tmp": true,
-    "log": true,
-    "storage": true
-  }
+	"editor.formatOnSave": true,
+	"editor.codeActionsOnSave": {
+		"source.fixAll.oxc": "explicit"
+	},
+	"oxc.enable": true,
+	"oxc.lint.run": "onType",
+	"typescript.tsdk": "node_modules/typescript/lib",
+	"typescript.enablePromptUseWorkspaceTsdk": true,
+	"files.exclude": {
+		"**/node_modules": true,
+		"**/.astro": true,
+		"**/dist": true,
+		"**/out": true,
+		"**/build": true,
+		"**/coverage": true,
+		"**/*.tsbuildinfo": true,
+		"**/pnpm-lock.yaml": true,
+		"**/.DS_Store": true,
+		"**/Thumbs.db": true
+	}
 }

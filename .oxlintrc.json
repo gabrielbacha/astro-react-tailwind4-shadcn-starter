@@ -1,0 +1,32 @@
+{
+	"$schema": "./node_modules/oxlint/configuration_schema.json",
+	"plugins": ["typescript", "unicorn", "oxc", "import", "promise", "node", "react", "jsx-a11y"],
+	"categories": {
+		"correctness": "error",
+		"suspicious": "warn",
+		"perf": "warn"
+	},
+	"rules": {
+		"no-unused-vars": "off",
+		"no-shadow": "off",
+		"no-await-in-loop": "off",
+		"typescript/no-explicit-any": "warn",
+		"typescript/no-non-null-assertion": "warn",
+		"typescript/no-unused-vars": "off",
+		"unicorn/no-array-callback-reference": "off",
+		"unicorn/no-array-for-each": "off",
+		"import/no-unassigned-import": "off",
+		"import/namespace": "off",
+		"jsx-a11y/label-has-associated-control": "warn",
+		"jsx-a11y/heading-has-content": "warn",
+		"react/no-unescaped-entities": "off",
+		"react/react-in-jsx-scope": "off",
+		"unicorn/no-array-sort": "warn",
+		"unicorn/prefer-array-find": "warn",
+		"no-underscore-dangle": "off",
+		"jsx-a11y/prefer-tag-over-role": "off",
+		"jsx-a11y/control-has-associated-label": "error",
+		"jsx-a11y/no-noninteractive-element-interactions": "off"
+	},
+	"ignorePatterns": [".astro", "dist", "out", "build", "coverage", "node_modules", "**/*.tsbuildinfo", "public/**"]
+}

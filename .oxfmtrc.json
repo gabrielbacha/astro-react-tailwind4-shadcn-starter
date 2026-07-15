@@ -1,0 +1,25 @@
+{
+	"$schema": "./node_modules/oxfmt/configuration_schema.json",
+	"useTabs": true,
+	"singleQuote": false,
+	"trailingComma": "all",
+	"printWidth": 120,
+	"bracketSameLine": false,
+	"ignorePatterns": [
+		".astro/**",
+		"dist/**",
+		"out/**",
+		"build/**",
+		"coverage/**",
+		"node_modules/**",
+		"pnpm-lock.yaml",
+		"**/*.tsbuildinfo"
+	],
+	"sortImports": {
+		"internalPattern": ["@/"],
+		"groups": [["builtin", "external"], "internal", ["parent", "sibling", "index"], "type", "unknown"]
+	},
+	"sortTailwindcss": {
+		"functions": ["cn", "cva"]
+	}
+}
