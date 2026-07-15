@@ -4,7 +4,7 @@ A minimal, theme-aware coming-soon starter built with Astro, React, and Tailwind
 
 ## ✨ Features
 
-- **Minimal hero** — centered coming-soon headline, supporting copy, and two CTA links
+- **Animated hero** — masked grid backdrop, radial glow, pulsing "coming soon" badge, gradient headline, staggered fade-up entrance, and an optional social-links row
 - **Responsive page shell** — accessible header, main content, footer, skip link, and mobile safe-area support
 - **Theme toggle** — follows the visitor's system preference initially and persists explicit light/dark choices without a flash
 - **SEO ready** — canonical URL, Open Graph, Twitter cards, JSON-LD, sitemap, `robots.txt`, and a generated web manifest
@@ -103,6 +103,8 @@ Locally, copy `.env.example` to `.env`. On GitHub Pages, set them as repository 
 ### Homepage and SEO
 
 - Edit the homepage copy and CTA links in `src/pages/index.astro`.
+- The hero's social-links row renders only when `siteConfig.socialMedia` entries are set; brand icons are inline SVGs (current `lucide-react` no longer ships them).
+- Entrance animations use the `animate-fade-up` utility defined in `src/styles/global.css` and are disabled under `prefers-reduced-motion`.
 - Page metadata uses the typed `SeoData` contract in `src/types/seo.ts`.
 - `Head.astro` emits one title, canonical metadata, social previews, theme metadata, and sanitized JSON-LD.
 - The 404 page is explicitly marked `noindex, follow`.
