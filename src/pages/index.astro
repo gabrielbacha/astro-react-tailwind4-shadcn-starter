@@ -61,11 +61,14 @@ const seo = {
 			</span>
 			Coming soon
 		</p>
-		<h1 class="animate-fade-up mb-6 bg-gradient-to-b from-[var(--foreground)] to-[var(--muted-foreground)] bg-clip-text text-5xl font-bold text-balance text-transparent [animation-delay:100ms] md:text-7xl">
+		<h1
+			class="animate-fade-up mb-6 max-w-full break-words bg-gradient-to-b from-[var(--foreground)] to-[var(--muted-foreground)] bg-clip-text text-5xl font-bold text-balance text-transparent [animation-delay:100ms] md:text-7xl"
+			translate="no"
+		>
 			{siteConfig.name}
 		</h1>
 		<p class="text-muted-foreground animate-fade-up mx-auto mb-10 max-w-xl text-lg text-pretty [animation-delay:200ms]">
-			A clean, minimal starter you can make your own. Replace this copy with whatever you're building.
+			A clean, minimal starter you can make your own. Replace this copy with whatever you’re building.
 		</p>
 		<div class="animate-fade-up flex flex-col gap-4 [animation-delay:300ms] sm:flex-row">
 			<a href="https://docs.astro.build" target="_blank" rel="noopener noreferrer" class={buttonVariants({ size: "lg" })}>
