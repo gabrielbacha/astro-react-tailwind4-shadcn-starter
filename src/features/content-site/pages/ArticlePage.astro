@@ -1,0 +1,132 @@
+---
+import { Image } from "astro:assets";
+import { render } from "astro:content";
+
+import { siteConfig } from "@/config/site";
+import Layout from "@/layouts/Layout.astro";
+import { getAssetPath } from "@/lib/utils";
+import type { SeoData } from "@/types/seo";
+
+import { contentSiteConfig } from "../config";
+import { formatPostDate, getBlogPath, getFeedPath, getPostPath, getReadingTime, getTagPath, slugifyTag, type BlogEntry } from "../lib/content";
+
+interface Props {
+	post: BlogEntry;
+}
+
+const { post } = Astro.props;
+const { Content } = await render(post);
+const author = post.data.author ?? siteConfig.name;
+const siteUrl = Astro.site ?? Astro.url;
+const postPath = getPostPath(post);
+const postUrl = new URL(postPath, siteUrl).href;
+const imagePath = post.data.cover?.src ?? getAssetPath("og-image.png");
+const imageUrl = new URL(imagePath, siteUrl).href;
+const readingTime = getReadingTime(post);
+const seo = {
+	title: `${post.data.title} | ${siteConfig.name}`,
+	description: post.data.description,
+	canonicalPath: postPath,
+	image: imagePath,
+	imageAlt: post.data.coverAlt ?? `${siteConfig.name} social preview`,
+	article: {
+		publishedTime: post.data.publishedAt.toISOString(),
+		modifiedTime: post.data.updatedAt?.toISOString(),
+		author,
+		tags: post.data.tags,
+	},
+	feed: { href: getFeedPath(), title: contentSiteConfig.feedTitle },
+	structuredData: [
+		{
+			"@context": "https://schema.org",
+			"@type": "BlogPosting",
+			headline: post.data.title,
+			description: post.data.description,
+			datePublished: post.data.publishedAt.toISOString(),
+			dateModified: (post.data.updatedAt ?? post.data.publishedAt).toISOString(),
+			mainEntityOfPage: postUrl,
+			image: imageUrl,
+			author: { "@type": "Person", name: author },
+			publisher: { "@type": "Organization", name: siteConfig.name },
+			keywords: post.data.tags.join(", "),
+		},
+		{
+			"@context": "https://schema.org",
+			"@type": "BreadcrumbList",
+			itemListElement: [
+				{ "@type": "ListItem", position: 1, name: "Blog", item: new URL(getBlogPath(), siteUrl).href },
+				{ "@type": "ListItem", position: 2, name: post.data.title, item: postUrl },
+			],
+		},
+	],
+} satisfies SeoData;
+---
+
+<Layout seo={seo}>
+	<article data-pagefind-body class="relative overflow-hidden">
+		<header class="border-border border-b">
+			<div class="mx-auto w-full max-w-5xl px-4 py-10 sm:px-6 sm:py-16 lg:px-8">
+				<a data-pagefind-ignore href={getBlogPath()} class="text-muted-foreground focus-visible:ring-ring inline-flex rounded-sm text-xs font-semibold tracking-[0.18em] uppercase transition-colors hover:text-foreground focus-visible:ring-2 focus-visible:outline-none">
+					<span aria-hidden="true">←</span>&nbsp; Journal
+				</a>
+				{
+					post.data.draft && (
+						<p data-pagefind-ignore class="border-destructive/40 bg-destructive/10 text-destructive mt-6 inline-flex rounded-full border px-3 py-1 text-xs font-semibold tracking-wide uppercase">
+							Draft preview
+						</p>
+					)
+				}
+				<h1 data-pagefind-meta="title" class="text-foreground mt-6 max-w-4xl text-4xl leading-[1.02] font-bold tracking-[-0.05em] text-balance sm:text-6xl lg:text-7xl">
+					{post.data.title}
+				</h1>
+				<p class="text-muted-foreground mt-6 max-w-3xl text-lg leading-8 text-pretty">{post.data.description}</p>
+				<div data-pagefind-ignore class="border-border text-muted-foreground mt-8 flex flex-wrap items-center gap-x-5 gap-y-3 border-t pt-5 text-xs font-medium tracking-wide uppercase">
+					<span>{author}</span>
+					<time datetime={post.data.publishedAt.toISOString()}>{formatPostDate(post.data.publishedAt)}</time>
+					<span>{readingTime} min read</span>
+					{post.data.updatedAt && <span>Updated {formatPostDate(post.data.updatedAt)}</span>}
+				</div>
+			</div>
+		</header>
+
+		{
+			post.data.cover && (
+				<div class="mx-auto w-full max-w-7xl px-4 pt-8 sm:px-6 sm:pt-12 lg:px-8">
+					<div class="border-border bg-muted overflow-hidden rounded-xl border">
+						<Image
+							src={post.data.cover}
+							alt={post.data.coverAlt ?? ""}
+							widths={[640, 960, 1280]}
+							sizes="(min-width: 1280px) 1200px, 100vw"
+							class="aspect-[1200/630] w-full object-cover"
+						/>
+					</div>
+				</div>
+			)
+		}
+
+		<div class="mx-auto grid w-full max-w-5xl gap-10 px-4 py-12 sm:px-6 sm:py-16 lg:grid-cols-[minmax(0,1fr)_12rem] lg:px-8">
+			<div class="prose prose-lg min-w-0">
+				<Content />
+			</div>
+			{
+				post.data.tags.length > 0 && (
+					<aside class="border-border h-fit border-t pt-5 lg:sticky lg:top-8" aria-label="Article tags">
+						<p class="text-muted-foreground mb-3 text-xs font-semibold tracking-[0.18em] uppercase">Filed under</p>
+						<div class="flex flex-wrap gap-2 lg:flex-col lg:items-start">
+							{post.data.tags.map((tag) => (
+								<a
+									data-pagefind-filter="tag"
+									href={getTagPath(slugifyTag(tag))}
+									class="bg-muted text-muted-foreground focus-visible:ring-ring rounded-full px-3 py-1.5 text-xs font-medium transition-colors hover:bg-accent hover:text-foreground focus-visible:ring-2 focus-visible:outline-none"
+								>
+									{tag}
+								</a>
+							))}
+						</div>
+					</aside>
+				)
+			}
+		</div>
+	</article>
+</Layout>

@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" role="img" aria-labelledby="title description">
+	<title id="title">Modular content grid</title>
+	<desc id="description">An editorial grid of black lines and numbered content blocks on a warm white field.</desc>
+	<rect width="1200" height="630" fill="#f5f4ef" />
+	<g fill="none" stroke="#111111" stroke-width="3">
+		<path d="M70 70h1060v490H70z" />
+		<path d="M70 210h1060M70 420h1060M390 70v490M830 70v490" />
+	</g>
+	<g fill="#111111" font-family="ui-monospace, monospace">
+		<text x="104" y="145" font-size="46" font-weight="700">CONTENT / 001</text>
+		<text x="425" y="145" font-size="22">SCHEMA</text>
+		<text x="865" y="145" font-size="22">ROUTES</text>
+		<text x="104" y="280" font-size="22">WRITE ONCE</text>
+		<text x="425" y="280" font-size="46" font-weight="700">STATIC</text>
+		<text x="865" y="280" font-size="22">SEARCH</text>
+		<text x="104" y="490" font-size="46" font-weight="700">REMOVE CLEANLY</text>
+		<circle cx="1065" cy="488" r="28" />
+	</g>
+</svg>

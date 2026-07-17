@@ -1,0 +1,11 @@
+---
+import type { TagGroup } from "@/features/content-site/lib/content";
+import { getTagPaths } from "@/features/content-site/lib/routes";
+import TagPage from "@/features/content-site/pages/TagPage.astro";
+
+export const getStaticPaths = getTagPaths;
+
+const { group } = Astro.props as { group: TagGroup };
+---
+
+<TagPage group={group} />

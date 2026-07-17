@@ -2,18 +2,64 @@
 import ThemeToggle from "@/components/utilities/ThemeToggle.astro";
 import { siteConfig } from "@/config/site";
 import { getAssetPath } from "@/lib/utils";
+
+const navigation = siteConfig.navigation.map((item) => ({ label: item.label, href: getAssetPath(item.href) }));
+const currentPath = Astro.url.pathname.endsWith("/") ? Astro.url.pathname : `${Astro.url.pathname}/`;
+const isCurrent = (href: string) => currentPath === href || currentPath.startsWith(href);
 ---
 
-<header class="border-border/70 bg-background/85 supports-[backdrop-filter]:bg-background/70 border-b backdrop-blur-md">
-	<nav aria-label="Primary navigation" class="mx-auto grid h-20 w-full max-w-7xl grid-cols-[1fr_auto_1fr] items-center px-4 sm:px-6 lg:px-8">
-		<span aria-hidden="true"></span>
+<header class="border-border/70 bg-background/90 relative z-50 border-b backdrop-blur-md">
+	<nav aria-label="Primary navigation" class="mx-auto flex h-20 w-full max-w-7xl items-center gap-6 px-4 sm:px-6 lg:px-8">
 		<a
 			href={getAssetPath("")}
-			class="text-foreground focus-visible:ring-ring min-w-0 rounded-sm text-center text-2xl font-bold tracking-tight transition-colors hover:text-primary/75 focus-visible:ring-2 focus-visible:ring-offset-4 focus-visible:outline-none sm:text-3xl"
+			class="text-foreground focus-visible:ring-ring min-w-0 rounded-sm text-xl font-bold tracking-tight transition-colors hover:text-primary/75 focus-visible:ring-2 focus-visible:ring-offset-4 focus-visible:outline-none sm:text-2xl"
 		>
-			<span class="block max-w-[60vw] truncate" translate="no">{siteConfig.name}</span>
+			<span class="block max-w-[52vw] truncate" translate="no">{siteConfig.name}</span>
 		</a>
-		<div class="justify-self-end">
+
+		{
+			navigation.length > 0 && (
+				<div class="ml-auto hidden items-center gap-1 md:flex">
+					{navigation.map(({ label, href }) => (
+						<a
+							href={href}
+							aria-current={isCurrent(href) ? "page" : undefined}
+							class="text-muted-foreground focus-visible:ring-ring rounded-md px-3 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-foreground focus-visible:ring-2 focus-visible:outline-none aria-[current=page]:bg-accent aria-[current=page]:text-foreground"
+						>
+							{label}
+						</a>
+					))}
+				</div>
+			)
+		}
+
+		<div class:list={["flex items-center gap-1", navigation.length === 0 && "ml-auto"]}>
+			{
+				navigation.length > 0 && (
+					<details class="group relative md:hidden">
+						<summary class="text-muted-foreground focus-visible:ring-ring flex size-10 cursor-pointer list-none items-center justify-center rounded-md transition-colors hover:bg-accent hover:text-foreground focus-visible:ring-2 focus-visible:outline-none [&::-webkit-details-marker]:hidden">
+							<span class="sr-only">Open navigation</span>
+							<svg class="size-5 group-open:hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+								<path d="M4 7h16M4 12h16M4 17h16" />
+							</svg>
+							<svg class="hidden size-5 group-open:block" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+								<path d="m6 6 12 12M18 6 6 18" />
+							</svg>
+						</summary>
+						<div class="border-border bg-popover text-popover-foreground absolute top-12 right-0 w-52 rounded-lg border p-2 shadow-xl">
+							{navigation.map(({ label, href }) => (
+								<a
+									href={href}
+									aria-current={isCurrent(href) ? "page" : undefined}
+									class="focus-visible:ring-ring block rounded-md px-3 py-2.5 text-sm font-medium transition-colors hover:bg-accent focus-visible:ring-2 focus-visible:outline-none aria-[current=page]:bg-accent"
+								>
+									{label}
+								</a>
+							))}
+						</div>
+					</details>
+				)
+			}
 			<ThemeToggle />
 		</div>
 	</nav>

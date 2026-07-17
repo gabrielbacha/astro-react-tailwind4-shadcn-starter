@@ -1,0 +1,32 @@
+---
+title: "Modular content without lock-in"
+description: "A content layer should feel native while it is installed and leave a clean seam when it is no longer needed."
+publishedAt: 2026-07-12
+author: "Your Brand"
+tags:
+  - Architecture
+  - Astro
+cover: ./_assets/modular-content.svg
+coverAlt: "An editorial grid illustrating schema, routes, static search, and clean removal"
+---
+
+A useful content system is more than a folder of Markdown files. It needs routes, metadata, discovery, and a predictable authoring contract. The trap is letting those concerns leak into every part of the site.
+
+This starter keeps the integration narrow:
+
+- the collection, content, components, and queries live together;
+- route files are adapters instead of second implementations;
+- navigation and SEO extensions remain generic;
+- search is generated from the final static HTML.
+
+## One feature, a few explicit seams
+
+The feature directory owns everything that only the content site needs. Astro still requires a root content configuration and filesystem routes, so those files deliberately stay tiny. They expose the feature to the framework without spreading its logic.
+
+That boundary is easy to understand during development and easy to delete later.
+
+## Static does not mean limited
+
+Build-time content collections provide schema validation and typed entries. RSS and search are derived from the same published set. The browser receives ordinary HTML for every article and only the search page loads a small client-side module.
+
+The result is a conventional content experience without turning the whole starter into an application runtime.

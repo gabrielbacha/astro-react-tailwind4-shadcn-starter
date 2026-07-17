@@ -35,6 +35,7 @@
 		"out",
 		"build",
 		"coverage",
+		"astroplate",
 		"node_modules",
 		"**/*.tsbuildinfo",
 		"public/**"

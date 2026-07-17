@@ -1,0 +1,18 @@
+---
+import type { Page } from "astro";
+
+import BlogListingPage from "@/features/content-site/pages/BlogListingPage.astro";
+import type { BlogEntry } from "@/features/content-site/lib/content";
+import { getBlogPaginationPaths } from "@/features/content-site/lib/routes";
+
+export const getStaticPaths = getBlogPaginationPaths;
+
+const { page } = Astro.props as { page: Page<BlogEntry> };
+---
+
+<BlogListingPage
+	posts={page.data}
+	currentPage={page.currentPage}
+	lastPage={page.lastPage}
+	totalPosts={page.total}
+/>

@@ -1,0 +1,38 @@
+---
+import { getBlogPath } from "../lib/content";
+
+interface Props {
+	currentPage: number;
+	lastPage: number;
+}
+
+const { currentPage, lastPage } = Astro.props;
+const previousPage = currentPage > 1 ? currentPage - 1 : undefined;
+const nextPage = currentPage < lastPage ? currentPage + 1 : undefined;
+const linkClass =
+	"border-border bg-background text-foreground focus-visible:ring-ring inline-flex min-h-11 items-center gap-2 rounded-md border px-4 text-sm font-medium transition-colors hover:bg-accent focus-visible:ring-2 focus-visible:outline-none";
+---
+
+{
+	lastPage > 1 && (
+		<nav aria-label="Blog pagination" class="border-border mt-10 flex items-center justify-between gap-4 border-t pt-6">
+			{previousPage ? (
+				<a href={getBlogPath(previousPage)} rel="prev" class={linkClass}>
+					<span aria-hidden="true">←</span> Previous
+				</a>
+			) : (
+				<span aria-hidden="true" />
+			)}
+			<p class="text-muted-foreground text-xs font-medium tracking-wide uppercase">
+				Page {currentPage} / {lastPage}
+			</p>
+			{nextPage ? (
+				<a href={getBlogPath(nextPage)} rel="next" class={linkClass}>
+					Next <span aria-hidden="true">→</span>
+				</a>
+			) : (
+				<span aria-hidden="true" />
+			)}
+		</nav>
+	)
+}

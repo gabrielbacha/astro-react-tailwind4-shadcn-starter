@@ -1,0 +1,29 @@
+---
+interface Props {
+	eyebrow: string;
+	title: string;
+	description: string;
+}
+
+const { eyebrow, title, description } = Astro.props;
+---
+
+<header class="border-border relative isolate overflow-hidden border-b">
+	<div
+		aria-hidden="true"
+		class="absolute inset-0 -z-10 bg-[linear-gradient(to_right,var(--border)_1px,transparent_1px)] bg-[size:5rem_100%] opacity-45 [mask-image:linear-gradient(to_right,black,transparent_85%)]"
+	>
+	</div>
+	<div class="mx-auto grid w-full max-w-7xl gap-8 px-4 py-14 sm:px-6 sm:py-20 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-end lg:px-8">
+		<div class="max-w-4xl">
+			<p class="text-muted-foreground mb-5 text-xs font-semibold tracking-[0.22em] uppercase">{eyebrow}</p>
+			<h1 class="text-foreground max-w-4xl text-4xl leading-[0.95] font-bold tracking-[-0.055em] text-balance sm:text-6xl lg:text-7xl">
+				{title}
+			</h1>
+			<p class="text-muted-foreground mt-6 max-w-2xl text-base leading-7 text-pretty sm:text-lg">{description}</p>
+		</div>
+		<div class="flex flex-wrap gap-3 empty:hidden">
+			<slot name="actions" />
+		</div>
+	</div>
+</header>

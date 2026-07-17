@@ -1,0 +1,11 @@
+---
+import BlogListingPage from "./BlogListingPage.astro";
+import { contentSiteConfig } from "../config";
+import { getVisiblePosts } from "../lib/content";
+
+const allPosts = await getVisiblePosts();
+const posts = allPosts.slice(0, contentSiteConfig.pageSize);
+const lastPage = Math.max(1, Math.ceil(allPosts.length / contentSiteConfig.pageSize));
+---
+
+<BlogListingPage posts={posts} currentPage={1} lastPage={lastPage} totalPosts={allPosts.length} />

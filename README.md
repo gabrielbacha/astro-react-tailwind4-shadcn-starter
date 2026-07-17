@@ -9,6 +9,7 @@ A minimal, theme-aware coming-soon starter built with Astro, React, and Tailwind
 - **Theme toggle** — follows the visitor's system preference initially and persists explicit light/dark choices without a flash
 - **SEO ready** — canonical URL, Open Graph, Twitter cards, JSON-LD, sitemap, `robots.txt`, and a generated web manifest
 - **MDX typography** — Tailwind Typography with theme-aware `.prose` defaults
+- **Removable content site** — typed Markdown/MDX collection, blog archive, article pages, tags, RSS, and privacy-friendly Pagefind search isolated under one feature directory
 - **Google Tag Manager** — opt-in configuration; an empty ID emits no tracking markup
 - **Strict TypeScript** — typed site configuration, layout metadata, Astro components, and React helpers
 - **Static-first React** — React and shadcn are available without hydrating the current page
@@ -49,6 +50,8 @@ Open [http://localhost:4321](http://localhost:4321).
 | --------------------------------- | -------------------------------------------------- |
 | `pnpm dev`                        | Start the development server                       |
 | `pnpm build`                      | Type-check and create the production build         |
+| `pnpm build:astro`                | Type-check and build Astro without indexing search |
+| `pnpm content:index`              | Generate the Pagefind index from `dist/`           |
 | `pnpm preview`                    | Preview the production build locally               |
 | `pnpm lint` / `pnpm lint:fix`     | Check or fix JavaScript and TypeScript lint issues |
 | `pnpm format` / `pnpm format:fix` | Check or fix repository formatting                 |
@@ -75,6 +78,11 @@ export const siteConfig = {
 		light: "#ffffff",
 		dark: "#0a0a0a",
 	},
+	navigation: [
+		{ label: "Blog", href: "blog/" },
+		{ label: "Tags", href: "tags/" },
+		{ label: "Search", href: "search/" },
+	],
 	socialMedia: {
 		instagram: undefined,
 		twitter: undefined,
@@ -133,6 +141,12 @@ MDX support is enabled. Wrap rendered content in `prose` for the theme-aware typ
 
 Override the prose tokens or content rules in `src/styles/typography.css`.
 
+### Optional content site
+
+The starter includes an isolated static content module under `src/features/content-site/`. It owns its collection schema, posts, components, queries, RSS generation, and search interface. Astro-required files in `src/pages/` and `src/content.config.ts` remain thin adapters.
+
+Three published example posts demonstrate MDX, tags, covers, dates, and missing-cover fallbacks. A fourth draft file appears in development but is excluded from production routes, RSS, and search. See the module's [authoring and removal guide](./src/features/content-site/README.md) for its frontmatter contract and exact deletion steps.
+
 ## 🏗️ Project Structure
 
 ```text
@@ -144,6 +158,7 @@ Override the prose tokens or content rules in `src/styles/typography.css`.
 │   │   ├── ui/                     # shadcn-style React primitives
 │   │   └── utilities/              # Static-first Astro utilities such as ThemeToggle
 │   ├── config/site.ts              # Typed site-wide configuration
+│   ├── features/content-site/       # Optional blog, tags, RSS, and search module
 │   ├── layouts/Layout.astro        # Accessible header/main/footer shell
 │   ├── lib/utils.ts                # cn() and base-aware asset paths
 │   ├── pages/                      # Homepage, 404, and generated manifest

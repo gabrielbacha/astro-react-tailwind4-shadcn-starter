@@ -7,6 +7,16 @@ export interface SeoData {
 	image?: string;
 	imageAlt?: string;
 	openGraphType?: string;
+	article?: {
+		publishedTime: string;
+		modifiedTime?: string;
+		author?: string;
+		tags?: string[];
+	};
+	feed?: {
+		href: string;
+		title: string;
+	};
 	noindex?: boolean;
 	nofollow?: boolean;
 	structuredData?: StructuredData;

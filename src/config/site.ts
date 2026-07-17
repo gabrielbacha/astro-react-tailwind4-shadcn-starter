@@ -10,6 +10,10 @@ export interface SiteConfig {
 		light: string;
 		dark: string;
 	};
+	navigation: Array<{
+		label: string;
+		href: string;
+	}>;
 	socialMedia: {
 		instagram?: string;
 		twitter?: string;
@@ -28,6 +32,11 @@ export const siteConfig: SiteConfig = {
 		light: "#ffffff",
 		dark: "#0a0a0a",
 	},
+	navigation: [
+		{ label: "Blog", href: "blog/" },
+		{ label: "Tags", href: "tags/" },
+		{ label: "Search", href: "search/" },
+	],
 	socialMedia: {
 		instagram: undefined,
 		twitter: undefined,

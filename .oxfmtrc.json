@@ -12,6 +12,7 @@
 		"out/**",
 		"build/**",
 		"coverage/**",
+		"astroplate/**",
 		"node_modules/**",
 		"pnpm-lock.yaml",
 		"**/*.tsbuildinfo"

@@ -1,0 +1,32 @@
+---
+import Layout from "@/layouts/Layout.astro";
+import type { SeoData } from "@/types/seo";
+
+import ContentHeader from "../components/ContentHeader.astro";
+import PostGrid from "../components/PostGrid.astro";
+import { contentSiteConfig } from "../config";
+import { getFeedPath, getTagPath, getTagsPath, type TagGroup } from "../lib/content";
+
+interface Props {
+	group: TagGroup;
+}
+
+const { group } = Astro.props;
+const seo = {
+	title: `${group.name} | ${contentSiteConfig.feedTitle}`,
+	description: `${group.posts.length} published ${group.posts.length === 1 ? "entry" : "entries"} filed under ${group.name}.`,
+	canonicalPath: getTagPath(group.slug),
+	feed: { href: getFeedPath(), title: contentSiteConfig.feedTitle },
+} satisfies SeoData;
+---
+
+<Layout seo={seo}>
+	<ContentHeader eyebrow="Index / Topic" title={group.name} description={`${group.posts.length} published ${group.posts.length === 1 ? "entry" : "entries"} connected by this topic.`}>
+		<a slot="actions" href={getTagsPath()} class="border-border bg-background text-foreground focus-visible:ring-ring inline-flex min-h-11 items-center rounded-md border px-4 text-sm font-medium transition-colors hover:bg-accent focus-visible:ring-2 focus-visible:outline-none">
+			All tags
+		</a>
+	</ContentHeader>
+	<section class="mx-auto w-full max-w-7xl px-4 py-12 sm:px-6 sm:py-16 lg:px-8">
+		<PostGrid posts={group.posts} />
+	</section>
+</Layout>

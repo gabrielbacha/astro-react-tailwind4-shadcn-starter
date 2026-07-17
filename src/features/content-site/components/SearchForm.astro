@@ -1,0 +1,158 @@
+---
+import { getAssetPath } from "@/lib/utils";
+
+import { getSearchPath } from "../lib/content";
+
+const pagefindUrl = getAssetPath("pagefind/pagefind.js");
+const pagefindBaseUrl = getAssetPath("");
+const pagefindBasePath = getAssetPath("pagefind/");
+---
+
+<section
+	data-content-search
+	data-pagefind-url={pagefindUrl}
+	data-pagefind-base-url={pagefindBaseUrl}
+	data-pagefind-base-path={pagefindBasePath}
+	data-development={String(import.meta.env.DEV)}
+	class="mx-auto w-full max-w-4xl"
+>
+	<form action={getSearchPath()} method="get" role="search" class="border-border bg-card flex gap-2 rounded-xl border p-2 shadow-sm">
+		<label for="content-search-input" class="sr-only">Search articles</label>
+		<svg class="text-muted-foreground ml-3 size-5 shrink-0 self-center" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+			<circle cx="11" cy="11" r="7" />
+			<path d="m20 20-4-4" />
+		</svg>
+		<input
+			id="content-search-input"
+			name="q"
+			type="search"
+			autocomplete="off"
+			placeholder="Search titles and article text…"
+			class="text-foreground placeholder:text-muted-foreground min-h-11 min-w-0 flex-1 bg-transparent px-2 text-base outline-none"
+		/>
+		<button type="submit" class="bg-primary text-primary-foreground focus-visible:ring-ring min-h-11 rounded-lg px-5 text-sm font-semibold transition-opacity hover:opacity-85 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none">
+			Search
+		</button>
+	</form>
+
+	<p data-search-status role="status" aria-live="polite" class="text-muted-foreground min-h-14 px-1 py-5 text-sm">
+		Type a word or phrase to search the journal.
+	</p>
+	<ol data-search-results class="grid gap-3"></ol>
+	<template data-search-result-template>
+		<li class="border-border bg-card rounded-xl border p-5 transition-colors hover:border-foreground/25 sm:p-6">
+			<a data-result-link class="focus-visible:ring-ring group block rounded-sm outline-none focus-visible:ring-2">
+				<h2 data-result-title class="text-foreground text-lg font-bold tracking-tight group-hover:underline sm:text-xl"></h2>
+				<p data-result-excerpt class="text-muted-foreground mt-2 text-sm leading-6"></p>
+				<span class="text-muted-foreground mt-4 inline-flex items-center gap-2 text-xs font-medium tracking-wide uppercase">
+					Read article <span aria-hidden="true">→</span>
+				</span>
+			</a>
+		</li>
+	</template>
+</section>
+
+<script is:inline>
+	const updateSearchUrl = (query) => {
+		const url = new URL(window.location.href);
+		if (query) url.searchParams.set("q", query);
+		else url.searchParams.delete("q");
+		window.history.replaceState({}, "", url);
+	};
+
+	for (const root of document.querySelectorAll("[data-content-search]")) {
+		const form = root.querySelector("form");
+		const input = root.querySelector('input[type="search"]');
+		const status = root.querySelector("[data-search-status]");
+		const results = root.querySelector("[data-search-results]");
+		const template = root.querySelector("[data-search-result-template]");
+
+		if (!form || !input || !status || !results || !template) continue;
+
+		let pagefindPromise;
+		let debounceTimer;
+		let requestId = 0;
+
+		const loadPagefind = () => {
+			if (!pagefindPromise) {
+				pagefindPromise = (async () => {
+					const pagefindUrl = root.dataset.pagefindUrl;
+					const baseUrl = root.dataset.pagefindBaseUrl;
+					const basePath = root.dataset.pagefindBasePath;
+					if (!pagefindUrl || !baseUrl || !basePath) throw new Error("Pagefind paths are not configured.");
+					const pagefind = await import(pagefindUrl);
+					await pagefind.options({ baseUrl, basePath });
+					await pagefind.init();
+					return pagefind;
+				})();
+			}
+
+			return pagefindPromise;
+		};
+
+		const showResults = (items) => {
+			results.replaceChildren();
+			for (const item of items) {
+				const fragment = template.content.cloneNode(true);
+				const link = fragment.querySelector("[data-result-link]");
+				const title = fragment.querySelector("[data-result-title]");
+				const excerpt = fragment.querySelector("[data-result-excerpt]");
+				if (!link || !title || !excerpt) continue;
+				link.href = item.url;
+				title.textContent = item.meta.title ?? "Untitled article";
+				excerpt.textContent = item.plain_excerpt;
+				results.append(fragment);
+			}
+		};
+
+		const search = async (value) => {
+			const query = value.trim();
+			const activeRequest = ++requestId;
+			updateSearchUrl(query);
+
+			if (!query) {
+				results.replaceChildren();
+				status.textContent = "Type a word or phrase to search the journal.";
+				return;
+			}
+
+			status.textContent = `Searching for “${query}”…`;
+
+			try {
+				const pagefind = await loadPagefind();
+				const response = await pagefind.search(query);
+				const items = await Promise.all(response.results.slice(0, 20).map((result) => result.data()));
+				if (activeRequest !== requestId) return;
+				showResults(items);
+				status.textContent = items.length === 0 ? `No articles found for “${query}”.` : `${response.results.length} article${response.results.length === 1 ? "" : "s"} found.`;
+			} catch {
+				if (activeRequest !== requestId) return;
+				results.replaceChildren();
+				status.textContent =
+					root.dataset.development === "true"
+						? "The search index is created by pnpm build. Run pnpm build, then pnpm preview to test search."
+						: "Search could not be loaded. Please refresh the page and try again.";
+			}
+		};
+
+		form.addEventListener("submit", (event) => {
+			event.preventDefault();
+			window.clearTimeout(debounceTimer);
+			void search(input.value);
+		});
+
+		input.addEventListener("focus", () => void loadPagefind().catch(() => undefined), { once: true });
+		input.addEventListener("input", () => {
+			window.clearTimeout(debounceTimer);
+			const query = input.value.trim();
+			if (query) void loadPagefind().then((pagefind) => pagefind.preload(query)).catch(() => undefined);
+			debounceTimer = window.setTimeout(() => void search(input.value), 180);
+		});
+
+		const initialQuery = new URL(window.location.href).searchParams.get("q") ?? "";
+		if (initialQuery) {
+			input.value = initialQuery;
+			void search(initialQuery);
+		}
+	}
+</script>
