@@ -2,6 +2,7 @@
 	"name": "astro-coming-soon-template",
 	"version": "1.0.0",
 	"private": true,
+	"description": "A modern, minimal coming-soon starter built with Astro, React, and Tailwind CSS.",
 	"type": "module",
 	"scripts": {
 		"dev": "astro dev",
@@ -10,6 +11,7 @@
 		"build:astro": "astro check && astro build",
 		"content:index": "pagefind --site dist",
 		"preview": "astro preview",
+		"project:init": "node scripts/project-init.mjs",
 		"astro": "astro",
 		"lint": "oxlint",
 		"lint:fix": "oxlint --fix",
@@ -41,6 +43,7 @@
 	},
 	"devDependencies": {
 		"@astrojs/check": "^0.9.10",
+		"@clack/prompts": "^1.7.0",
 		"@types/react": "19.2.18",
 		"@types/react-dom": "19.2.4",
 		"lefthook": "^2.1.10",

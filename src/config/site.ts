@@ -21,10 +21,12 @@ export interface SiteConfig {
 }
 
 export const siteConfig: SiteConfig = {
+	// project-init:start
 	name: "Your Brand",
 	description: "A modern, minimal coming-soon landing page built with Astro, React, and Tailwind CSS.",
 	url: "https://example.com",
 	base: "/",
+	// project-init:end
 	language: "en",
 	locale: "en_US",
 	gtmId: "",

@@ -63,6 +63,9 @@ importers:
       '@astrojs/check':
         specifier: ^0.9.10
         version: 0.9.10(prettier-plugin-astro@0.14.1)(prettier@3.9.5)(typescript@6.0.3)
+      '@clack/prompts':
+        specifier: ^1.7.0
+        version: 1.7.0
       '@types/react':
         specifier: 19.2.18
         version: 19.2.18

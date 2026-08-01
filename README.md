@@ -35,6 +35,24 @@ A minimal, theme-aware coming-soon starter built with Astro, React, and Tailwind
 
 ### Setup
 
+<!-- project-init:start -->
+
+To turn this boilerplate into a new project, run the one-shot initializer before starting development:
+
+```bash
+pnpm install
+pnpm project:init
+pnpm dev
+```
+
+The guided initializer sets the project identity and deployment defaults, validates the generated site, replaces the
+template Git history with a clean initial commit, and then removes itself. `PUBLIC_SITE_URL` and `PUBLIC_BASE` can
+still override the generated defaults in deployment environments.
+
+<!-- project-init:end -->
+
+For an existing configured project:
+
 ```bash
 git clone https://github.com/your-username/your-repo.git
 cd your-repo
@@ -46,18 +64,19 @@ Open [http://localhost:4321](http://localhost:4321).
 
 ### Scripts
 
-| Script                            | Description                                        |
-| --------------------------------- | -------------------------------------------------- |
-| `pnpm dev`                        | Start the development server                       |
-| `pnpm build`                      | Type-check and create the production build         |
-| `pnpm build:astro`                | Type-check and build Astro without indexing search |
-| `pnpm content:index`              | Generate the Pagefind index from `dist/`           |
-| `pnpm preview`                    | Preview the production build locally               |
-| `pnpm lint` / `pnpm lint:fix`     | Check or fix JavaScript and TypeScript lint issues |
-| `pnpm format` / `pnpm format:fix` | Check or fix repository formatting                 |
-| `pnpm typecheck`                  | Run `astro check`                                  |
-| `pnpm check`                      | Run read-only formatting, lint, and type checks    |
-| `pnpm fix`                        | Apply formatting and lint fixes                    |
+| Script                            | Description                                          |
+| --------------------------------- | ---------------------------------------------------- |
+| `pnpm dev`                        | Start the development server                         |
+| `pnpm build`                      | Type-check and create the production build           |
+| `pnpm build:astro`                | Type-check and build Astro without indexing search   |
+| `pnpm content:index`              | Generate the Pagefind index from `dist/`             |
+| `pnpm preview`                    | Preview the production build locally                 |
+| `pnpm project:init`               | Configure a new project, reset Git, then self-remove |
+| `pnpm lint` / `pnpm lint:fix`     | Check or fix JavaScript and TypeScript lint issues   |
+| `pnpm format` / `pnpm format:fix` | Check or fix repository formatting                   |
+| `pnpm typecheck`                  | Run `astro check`                                    |
+| `pnpm check`                      | Run read-only formatting, lint, and type checks      |
+| `pnpm fix`                        | Apply formatting and lint fixes                      |
 
 Lefthook installs through the `prepare` script and formats or lints supported staged files before a commit.
 
