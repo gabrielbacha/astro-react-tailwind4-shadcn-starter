@@ -133,6 +133,24 @@
 	::selection {
 		@apply bg-primary text-primary-foreground;
 	}
+
+	/* Shiki emits both theme values as CSS variables; select the active set
+	   using the same `.dark` class initialized in Head.astro before paint. */
+	.astro-code,
+	.astro-code span {
+		color: var(--shiki-light);
+		background-color: var(--shiki-light-bg);
+	}
+
+	html.dark .astro-code,
+	html.dark .astro-code span {
+		color: var(--shiki-dark);
+		background-color: var(--shiki-dark-bg);
+	}
+
+	.astro-code {
+		@apply rounded-lg;
+	}
 }
 
 @media (prefers-reduced-motion: reduce) {

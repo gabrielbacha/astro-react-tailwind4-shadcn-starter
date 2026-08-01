@@ -17,6 +17,18 @@ export default defineConfig({
 	base: env.PUBLIC_BASE || siteConfig.base,
 	trailingSlash: "always",
 	integrations: [mdx(), react(), sitemap(), robotsTxt()],
+	markdown: {
+		// Emit light and dark token colors as CSS variables so code blocks follow
+		// the same pre-paint `.dark` theme used by the rest of the site.
+		shikiConfig: {
+			themes: {
+				light: "github-light",
+				dark: "github-dark",
+			},
+			defaultColor: false,
+			wrap: true,
+		},
+	},
 	env: {
 		schema: {
 			PUBLIC_GTM_ID: envField.string({ context: "client", access: "public", optional: true }),
