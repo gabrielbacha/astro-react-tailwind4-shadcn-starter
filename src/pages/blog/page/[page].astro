@@ -10,9 +10,4 @@ export const getStaticPaths = getBlogPaginationPaths;
 const { page } = Astro.props as { page: Page<BlogEntry> };
 ---
 
-<BlogListingPage
-	posts={page.data}
-	currentPage={page.currentPage}
-	lastPage={page.lastPage}
-	totalPosts={page.total}
-/>
+<BlogListingPage posts={page.data} currentPage={page.currentPage} lastPage={page.lastPage} totalPosts={page.total} />

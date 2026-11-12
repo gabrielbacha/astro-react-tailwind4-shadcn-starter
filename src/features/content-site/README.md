@@ -54,3 +54,9 @@ Article pages alone carry `data-pagefind-body`, so archive, navigation, tag, and
 5. Remove the content-module sections from the root README.
 
 The generic navigation renderer and optional `SeoData.article` / `SeoData.feed` support can remain without the module.
+
+Route prefixes are fixed by the Astro page adapters. Rename those files together with `lib/route-contract.ts`; the build refuses a prefix with no matching adapter.
+
+When removing this optional feature, also remove the `contentRoutes` and `validateContentAdapters` imports and call from `astro.config.ts`, and remove `tests/browser/search.spec.ts`. Keep the shared theme tests and portable maintenance helpers. The built-output check discovers feed/search requirements from the remaining page adapters.
+
+Published dates use UTC calendar labels; the publication filter uses one build cutoff. `ASTRO_PUBLICATION_CUTOFF` can select a reproducible cutoff for offline acceptance builds.

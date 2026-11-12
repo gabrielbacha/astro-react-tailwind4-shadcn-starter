@@ -7,10 +7,15 @@ import { defineConfig, envField } from "astro/config";
 import { loadEnv } from "vite";
 
 import { siteConfig } from "./src/config/site";
+import { buildCutoff } from "./src/lib/shared/site-contract";
 
 // `site` and `base` must be known at config time, so they come from process/.env
 // (astro:env is not available here). siteConfig provides the defaults.
 const env = loadEnv(process.env.NODE_ENV ?? "production", process.cwd(), "PUBLIC_");
+
+import { validateContentAdapters } from "./scripts/lib/validate-content-adapters.mjs";
+import { contentRoutes } from "./src/features/content-site/lib/route-contract";
+validateContentAdapters(process.cwd(), contentRoutes);
 
 export default defineConfig({
 	site: env.PUBLIC_SITE_URL || siteConfig.url,
@@ -36,5 +41,6 @@ export default defineConfig({
 	},
 	vite: {
 		plugins: [tailwindcss()],
+		define: { "import.meta.env.PUBLICATION_CUTOFF": JSON.stringify(buildCutoff(process.env.ASTRO_PUBLICATION_CUTOFF)) },
 	},
 });

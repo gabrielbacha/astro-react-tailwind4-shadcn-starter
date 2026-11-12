@@ -1,67 +1,48 @@
 name: CI & Deploy to GitHub Pages
-
 on:
   push:
     branches: [main]
   pull_request:
     branches: [main]
-  # Allows you to run this workflow manually from the Actions tab on GitHub.
   workflow_dispatch:
-
-# Allow this workflow to clone the repo and create a page deployment
 permissions:
   contents: read
-  pages: write
-  id-token: write
-
 jobs:
   check:
     runs-on: ubuntu-latest
+    env:
+      PUBLIC_SITE_URL: ${{ vars.PUBLIC_SITE_URL }}
+      PUBLIC_BASE: ${{ vars.PUBLIC_BASE }}
+      PUBLIC_GTM_ID: ${{ vars.PUBLIC_GTM_ID }}
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v7
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v4
-      - name: Setup Node
-        uses: actions/setup-node@v4
+      - uses: actions/checkout@v7
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
         with:
           node-version: 24
           cache: pnpm
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
-      - name: Lint
-        run: pnpm lint
-      - name: Format check
-        run: pnpm format
-      - name: Typecheck
-        run: pnpm typecheck
-
-  build:
-    # Builds only for deploys (push/manual); PRs stop at the check job.
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm check
+      - run: pnpm build
+      - run: pnpm test:built
+      - run: pnpm exec playwright install --with-deps chromium
+      - run: pnpm test:e2e
+      - name: Upload the checked production artifact
+        if: github.event_name != 'pull_request'
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: dist
+  deploy:
     if: github.event_name != 'pull_request'
     needs: check
     runs-on: ubuntu-latest
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v7
-      - name: Install, build, and upload your site
-        uses: withastro/action@v6
-        env:
-          # Set these as repository Actions variables (Settings → Secrets and
-          # variables → Actions → Variables). Empty values fall back to
-          # src/config/site.ts defaults.
-          PUBLIC_SITE_URL: ${{ vars.PUBLIC_SITE_URL }}
-          PUBLIC_BASE: ${{ vars.PUBLIC_BASE }}
-          PUBLIC_GTM_ID: ${{ vars.PUBLIC_GTM_ID }}
-
-  deploy:
-    if: github.event_name != 'pull_request'
-    needs: build
-    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
-      - name: Deploy to GitHub Pages
+      - name: Deploy the checked artifact
         id: deployment
         uses: actions/deploy-pages@v5

@@ -1,11 +1,5 @@
 pre-commit:
-  parallel: true
+  parallel: false
   commands:
-    format:
-      glob: "*.{astro,css,js,jsx,ts,tsx,mjs,cjs,json,jsonc,md,mdx,yaml,yml}"
-      run: pnpm oxfmt {staged_files}
-      stage_fixed: true
-    lint:
-      glob: "*.{js,jsx,ts,tsx,mjs,cjs}"
-      run: pnpm oxlint --fix {staged_files}
-      stage_fixed: true
+    staged-quality:
+      run: python3 scripts/check_staged.py

@@ -17,8 +17,16 @@ const seo = {
 ---
 
 <Layout seo={seo}>
-	<ContentHeader eyebrow="Index / Search" title="Search the archive." description="A local, privacy-friendly index generated from the published static pages.">
-		<a slot="actions" href={getBlogPath()} class="border-border bg-background text-foreground focus-visible:ring-ring inline-flex min-h-11 items-center rounded-md border px-4 text-sm font-medium transition-colors hover:bg-accent focus-visible:ring-2 focus-visible:outline-none">
+	<ContentHeader
+		eyebrow="Index / Search"
+		title="Search the archive."
+		description="A local, privacy-friendly index generated from the published static pages."
+	>
+		<a
+			slot="actions"
+			href={getBlogPath()}
+			class="inline-flex min-h-11 items-center rounded-md border border-border bg-background px-4 text-sm font-medium text-foreground transition-colors hover:bg-accent focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
+		>
 			All posts
 		</a>
 	</ContentHeader>

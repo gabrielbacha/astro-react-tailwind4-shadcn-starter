@@ -28,11 +28,23 @@ const startIndex = (currentPage - 1) * contentSiteConfig.pageSize;
 ---
 
 <Layout seo={seo}>
-	<ContentHeader eyebrow={`Journal / ${String(currentPage).padStart(2, "0")}`} title="Notes built to last." description={contentSiteConfig.feedDescription}>
-		<a slot="actions" href={getSearchPath()} class="border-border bg-background text-foreground focus-visible:ring-ring inline-flex min-h-11 items-center rounded-md border px-4 text-sm font-medium transition-colors hover:bg-accent focus-visible:ring-2 focus-visible:outline-none">
+	<ContentHeader
+		eyebrow={`Journal / ${String(currentPage).padStart(2, "0")}`}
+		title="Notes built to last."
+		description={contentSiteConfig.feedDescription}
+	>
+		<a
+			slot="actions"
+			href={getSearchPath()}
+			class="inline-flex min-h-11 items-center rounded-md border border-border bg-background px-4 text-sm font-medium text-foreground transition-colors hover:bg-accent focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
+		>
 			Search
 		</a>
-		<a slot="actions" href={getFeedPath()} class="bg-primary text-primary-foreground focus-visible:ring-ring inline-flex min-h-11 items-center rounded-md px-4 text-sm font-medium transition-opacity hover:opacity-85 focus-visible:ring-2 focus-visible:outline-none">
+		<a
+			slot="actions"
+			href={getFeedPath()}
+			class="inline-flex min-h-11 items-center rounded-md bg-primary px-4 text-sm font-medium text-primary-foreground transition-opacity hover:opacity-85 focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
+		>
 			RSS feed
 		</a>
 	</ContentHeader>
@@ -40,10 +52,15 @@ const startIndex = (currentPage - 1) * contentSiteConfig.pageSize;
 	<section class="mx-auto w-full max-w-7xl px-4 py-12 sm:px-6 sm:py-16 lg:px-8">
 		<div class="mb-8 flex flex-wrap items-end justify-between gap-4">
 			<div>
-				<p class="text-muted-foreground text-xs font-semibold tracking-[0.18em] uppercase">Archive</p>
-				<h2 class="text-foreground mt-2 text-2xl font-bold tracking-tight">{totalPosts} published {totalPosts === 1 ? "entry" : "entries"}</h2>
+				<p class="text-xs font-semibold tracking-[0.18em] text-muted-foreground uppercase">Archive</p>
+				<h2 class="mt-2 text-2xl font-bold tracking-tight text-foreground">
+					{totalPosts} published {totalPosts === 1 ? "entry" : "entries"}
+				</h2>
 			</div>
-			<a href={getTagsPath()} class="text-muted-foreground focus-visible:ring-ring rounded-sm text-sm font-medium underline-offset-4 transition-colors hover:text-foreground hover:underline focus-visible:ring-2 focus-visible:outline-none">
+			<a
+				href={getTagsPath()}
+				class="rounded-sm text-sm font-medium text-muted-foreground underline-offset-4 transition-colors hover:text-foreground hover:underline focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
+			>
 				Browse by tag <span aria-hidden="true">→</span>
 			</a>
 		</div>

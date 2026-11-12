@@ -153,7 +153,7 @@ Replace the placeholder files in `public/` with your own favicon, app icons, and
 MDX support is enabled. Wrap rendered content in `prose` for the theme-aware typography layer:
 
 ```astro
-<article class="prose mx-auto">
+<article class="mx-auto prose">
 	<Content />
 </article>
 ```
@@ -201,3 +201,9 @@ A CI + GitHub Pages workflow is included at `.github/workflows/deploy.yml`. It r
 ## 📄 License
 
 [MIT](./LICENSE) — free to use, modify, and distribute.
+
+## Template maintenance
+
+The Astro starter owns the portable contract in `template-maintenance/site-contract.ts`. Both templates keep checked copies for independent use. Run `node scripts/update-template-contracts.mjs` in the owning starter checkout to update both copies; `--check` verifies them. Each copy records its source and SHA-256 revision in `src/lib/shared/site-contract-origin.json`. Visual components and content schemas stay local.
+
+Pre-commit checks staged bytes and staged configuration with installed local tools. It never repairs or stages working files. Use the explicit fix command, review changes, then stage selected hunks. `pnpm check` runs source checks and unit contracts; `pnpm build` produces the site. Production browser tests use `pnpm test:e2e`. No deployment is performed by local checks.

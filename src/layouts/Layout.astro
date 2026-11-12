@@ -21,26 +21,24 @@ const gtmId = PUBLIC_GTM_ID || siteConfig.gtmId;
 
 <html lang={siteConfig.language}>
 	<Head seo={seo} prefetchInHead={prefetchInHead} />
-	<body class="bg-background text-foreground font-sans antialiased">
+	<body class="bg-background font-sans text-foreground antialiased">
 		<a
 			href="#main-content"
-			class="bg-background text-foreground focus-visible:ring-ring fixed top-3 left-3 z-[100] -translate-y-20 rounded-md px-4 py-2 text-sm font-medium shadow-lg transition-transform focus-visible:translate-y-0 focus-visible:ring-2 focus-visible:outline-none"
+			class="fixed top-3 left-3 z-[100] -translate-y-20 rounded-md bg-background px-4 py-2 text-sm font-medium text-foreground shadow-lg transition-transform focus-visible:translate-y-0 focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
 		>
 			Skip to content
 		</a>
-		{
-			gtmId && (
-				<noscript>
-					<iframe
-						src={`https://www.googletagmanager.com/ns.html?id=${encodeURIComponent(gtmId)}`}
-						height="0"
-						width="0"
-						style="display:none;visibility:hidden"
-						title="Google Tag Manager"
-					></iframe>
-				</noscript>
-			)
-		}
+		{gtmId && (
+			<noscript>
+				<iframe
+					src={`https://www.googletagmanager.com/ns.html?id=${encodeURIComponent(gtmId)}`}
+					height="0"
+					width="0"
+					style="display:none;visibility:hidden"
+					title="Google Tag Manager"
+				></iframe>
+			</noscript>
+		)}
 
 		<div class="grid min-h-dvh grid-rows-[auto_1fr_auto]">
 			{!hideNavbar && <Navbar />}

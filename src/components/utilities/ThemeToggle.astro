@@ -7,6 +7,7 @@ import { Moon, Sun } from "lucide-react";
 <Button
 	variant="ghost"
 	size="icon"
+	className="size-[44px]"
 	type="button"
 	id="theme-toggle"
 	data-theme-toggle
@@ -19,64 +20,3 @@ import { Moon, Sun } from "lucide-react";
 	<Sun aria-hidden="true" className="h-[1.35rem] w-[1.35rem] dark:hidden" />
 	<Moon aria-hidden="true" className="hidden h-5 w-5 dark:block" />
 </Button>
-
-<script>
-	type Theme = "light" | "dark";
-
-	const storageKey = "theme";
-	const button = document.querySelector<HTMLButtonElement>("[data-theme-toggle]");
-	const colorScheme = window.matchMedia("(prefers-color-scheme: dark)");
-
-	function readStoredTheme(): Theme | null {
-		try {
-			const value = localStorage.getItem(storageKey);
-			return value === "light" || value === "dark" ? value : null;
-		} catch {
-			return null;
-		}
-	}
-
-	function storeTheme(theme: Theme) {
-		try {
-			localStorage.setItem(storageKey, theme);
-		} catch {
-			// The visual preference still applies for the current page.
-		}
-	}
-
-	function syncButton(theme: Theme) {
-		if (!button) return;
-		const nextTheme = theme === "dark" ? "light" : "dark";
-		const label = `Switch to ${nextTheme} theme`;
-		button.setAttribute("aria-pressed", String(theme === "dark"));
-		button.setAttribute("aria-label", label);
-		button.title = label;
-	}
-
-	function applyTheme(theme: Theme, persist = false) {
-		const isDark = theme === "dark";
-		const root = document.documentElement;
-		root.classList.toggle("dark", isDark);
-		root.dataset.theme = theme;
-		root.style.colorScheme = theme;
-
-		const themeColor = button?.dataset[isDark ? "darkColor" : "lightColor"];
-		if (themeColor) document.querySelector('meta[name="theme-color"]')?.setAttribute("content", themeColor);
-		if (persist) storeTheme(theme);
-		syncButton(theme);
-	}
-
-	if (button) {
-		const currentTheme: Theme = document.documentElement.classList.contains("dark") ? "dark" : "light";
-		syncButton(currentTheme);
-
-		button.addEventListener("click", () => {
-			const nextTheme: Theme = document.documentElement.classList.contains("dark") ? "light" : "dark";
-			applyTheme(nextTheme, true);
-		});
-
-		colorScheme.addEventListener("change", (event) => {
-			if (readStoredTheme() === null) applyTheme(event.matches ? "dark" : "light");
-		});
-	}
-</script>

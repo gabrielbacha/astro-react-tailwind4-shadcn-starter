@@ -11,14 +11,14 @@ interface Props {
 const { posts, startIndex = 0, emptyMessage = "No published posts yet." } = Astro.props;
 ---
 
-{
-	posts.length > 0 ? (
-		<div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-			{posts.map((post, index) => <PostCard post={post} index={startIndex + index + 1} />)}
-		</div>
-	) : (
-		<div class="border-border bg-muted/35 rounded-xl border border-dashed px-6 py-16 text-center">
-			<p class="text-muted-foreground text-sm">{emptyMessage}</p>
-		</div>
-	)
-}
+{posts.length > 0 ? (
+	<div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+		{posts.map((post, index) => (
+			<PostCard post={post} index={startIndex + index + 1} />
+		))}
+	</div>
+) : (
+	<div class="rounded-xl border border-dashed border-border bg-muted/35 px-6 py-16 text-center">
+		<p class="text-sm text-muted-foreground">{emptyMessage}</p>
+	</div>
+)}

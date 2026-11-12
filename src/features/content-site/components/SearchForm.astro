@@ -16,9 +16,23 @@ const pagefindBasePath = getAssetPath("pagefind/");
 	data-development={String(import.meta.env.DEV)}
 	class="mx-auto w-full max-w-4xl"
 >
-	<form action={getSearchPath()} method="get" role="search" class="border-border bg-card flex gap-2 rounded-xl border p-2 shadow-sm">
-		<label for="content-search-input" class="sr-only">Search articles</label>
-		<svg class="text-muted-foreground ml-3 size-5 shrink-0 self-center" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+	<form
+		action={getSearchPath()}
+		method="get"
+		role="search"
+		class="flex gap-2 rounded-xl border border-border bg-card p-2 shadow-sm"
+	>
+		<label for="content-search-input" class="sr-only">
+			Search articles
+		</label>
+		<svg
+			class="ml-3 size-5 shrink-0 self-center text-muted-foreground"
+			viewBox="0 0 24 24"
+			fill="none"
+			stroke="currentColor"
+			stroke-width="2"
+			aria-hidden="true"
+		>
 			<circle cx="11" cy="11" r="7" />
 			<path d="m20 20-4-4" />
 		</svg>
@@ -28,23 +42,45 @@ const pagefindBasePath = getAssetPath("pagefind/");
 			type="search"
 			autocomplete="off"
 			placeholder="Search titles and article text…"
-			class="text-foreground placeholder:text-muted-foreground min-h-11 min-w-0 flex-1 bg-transparent px-2 text-base outline-none"
+			class="min-h-11 min-w-0 flex-1 bg-transparent px-2 text-base text-foreground outline-none placeholder:text-muted-foreground"
 		/>
-		<button type="submit" class="bg-primary text-primary-foreground focus-visible:ring-ring min-h-11 rounded-lg px-5 text-sm font-semibold transition-opacity hover:opacity-85 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none">
+		<button
+			type="submit"
+			class="min-h-11 rounded-lg bg-primary px-5 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-85 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:outline-none"
+		>
 			Search
 		</button>
 	</form>
 
-	<p data-search-status role="status" aria-live="polite" class="text-muted-foreground min-h-14 px-1 py-5 text-sm">
+	<p data-search-status role="status" aria-live="polite" class="min-h-14 px-1 py-5 text-sm text-muted-foreground">
 		Type a word or phrase to search the journal.
 	</p>
 	<ol data-search-results class="grid gap-3"></ol>
+	<button
+		type="button"
+		data-search-more
+		hidden
+		class="mt-5 min-h-11 rounded-lg border border-border px-5 text-sm font-semibold"
+	>
+		Load more results
+	</button>
+	<button
+		type="button"
+		data-search-retry
+		hidden
+		class="mt-5 min-h-11 rounded-lg border border-border px-5 text-sm font-semibold"
+	>
+		Retry search
+	</button>
 	<template data-search-result-template>
-		<li class="border-border bg-card rounded-xl border p-5 transition-colors hover:border-foreground/25 sm:p-6">
-			<a data-result-link class="focus-visible:ring-ring group block rounded-sm outline-none focus-visible:ring-2">
-				<h2 data-result-title class="text-foreground text-lg font-bold tracking-tight group-hover:underline sm:text-xl"></h2>
-				<p data-result-excerpt class="text-muted-foreground mt-2 text-sm leading-6"></p>
-				<span class="text-muted-foreground mt-4 inline-flex items-center gap-2 text-xs font-medium tracking-wide uppercase">
+		<li class="rounded-xl border border-border bg-card p-5 transition-colors hover:border-foreground/25 sm:p-6">
+			<a data-result-link class="group block rounded-sm outline-none focus-visible:ring-2 focus-visible:ring-ring">
+				<h2
+					data-result-title
+					class="text-lg font-bold tracking-tight text-foreground group-hover:underline sm:text-xl"
+				></h2>
+				<p data-result-excerpt class="mt-2 text-sm leading-6 text-muted-foreground"></p>
+				<span class="mt-4 inline-flex items-center gap-2 text-xs font-medium tracking-wide text-muted-foreground uppercase">
 					Read article <span aria-hidden="true">→</span>
 				</span>
 			</a>
@@ -57,7 +93,7 @@ const pagefindBasePath = getAssetPath("pagefind/");
 		const url = new URL(window.location.href);
 		if (query) url.searchParams.set("q", query);
 		else url.searchParams.delete("q");
-		window.history.replaceState({}, "", url);
+		window.history.replaceState(window.history.state, "", url);
 	};
 
 	for (const root of document.querySelectorAll("[data-content-search]")) {
@@ -66,12 +102,19 @@ const pagefindBasePath = getAssetPath("pagefind/");
 		const status = root.querySelector("[data-search-status]");
 		const results = root.querySelector("[data-search-results]");
 		const template = root.querySelector("[data-search-result-template]");
+		const more = root.querySelector("[data-search-more]"),
+			retry = root.querySelector("[data-search-retry]");
 
-		if (!form || !input || !status || !results || !template) continue;
+		if (!form || !input || !status || !results || !template || !more || !retry) continue;
 
 		let pagefindPromise;
 		let debounceTimer;
-		let requestId = 0;
+		let requestId = 0,
+			loadAttempt = 0,
+			shown = 0;
+		let handles = [],
+			activeQuery = "",
+			detailBusy = false;
 
 		const loadPagefind = () => {
 			if (!pagefindPromise) {
@@ -80,18 +123,24 @@ const pagefindBasePath = getAssetPath("pagefind/");
 					const baseUrl = root.dataset.pagefindBaseUrl;
 					const basePath = root.dataset.pagefindBasePath;
 					if (!pagefindUrl || !baseUrl || !basePath) throw new Error("Pagefind paths are not configured.");
-					const pagefind = await import(pagefindUrl);
+					const moduleUrl = new URL(pagefindUrl, window.location.href);
+					if (loadAttempt) moduleUrl.searchParams.set("retry", String(loadAttempt));
+					const pagefind = await import(moduleUrl.href);
 					await pagefind.options({ baseUrl, basePath });
 					await pagefind.init();
 					return pagefind;
-				})();
+				})().catch((error) => {
+					pagefindPromise = undefined;
+					loadAttempt++;
+					throw error;
+				});
 			}
 
 			return pagefindPromise;
 		};
 
-		const showResults = (items) => {
-			results.replaceChildren();
+		const showResults = (items, append = false) => {
+			if (!append) results.replaceChildren();
 			for (const item of items) {
 				const fragment = template.content.cloneNode(true);
 				const link = fragment.querySelector("[data-result-link]");
@@ -105,9 +154,36 @@ const pagefindBasePath = getAssetPath("pagefind/");
 			}
 		};
 
+		const showBatch = async (activeRequest, append = false) => {
+			if (activeRequest !== requestId || detailBusy) return;
+			detailBusy = true;
+			more.disabled = true;
+			try {
+				const items = await Promise.all(handles.slice(shown, shown + 20).map((result) => result.data()));
+				if (activeRequest !== requestId) return;
+				showResults(items, append);
+				shown += items.length;
+				more.hidden = shown >= handles.length;
+				status.textContent = handles.length
+					? `Showing ${shown} of ${handles.length} articles for “${activeQuery}”.`
+					: `No articles found for “${activeQuery}”.`;
+			} finally {
+				if (activeRequest === requestId) {
+					detailBusy = false;
+					more.disabled = false;
+				}
+			}
+		};
+
 		const search = async (value) => {
 			const query = value.trim();
 			const activeRequest = ++requestId;
+			activeQuery = query;
+			handles = [];
+			shown = 0;
+			detailBusy = false;
+			more.hidden = true;
+			retry.hidden = true;
 			updateSearchUrl(query);
 
 			if (!query) {
@@ -120,18 +196,19 @@ const pagefindBasePath = getAssetPath("pagefind/");
 
 			try {
 				const pagefind = await loadPagefind();
-				const response = await pagefind.search(query);
-				const items = await Promise.all(response.results.slice(0, 20).map((result) => result.data()));
 				if (activeRequest !== requestId) return;
-				showResults(items);
-				status.textContent = items.length === 0 ? `No articles found for “${query}”.` : `${response.results.length} article${response.results.length === 1 ? "" : "s"} found.`;
+				const response = await pagefind.search(query);
+				if (activeRequest !== requestId) return;
+				handles = response.results;
+				await showBatch(activeRequest);
 			} catch {
 				if (activeRequest !== requestId) return;
 				results.replaceChildren();
+				retry.hidden = false;
 				status.textContent =
 					root.dataset.development === "true"
 						? "The search index is created by pnpm build. Run pnpm build, then pnpm preview to test search."
-						: "Search could not be loaded. Please refresh the page and try again.";
+						: "Search could not load. Check your connection, then use Retry search.";
 			}
 		};
 
@@ -144,9 +221,22 @@ const pagefindBasePath = getAssetPath("pagefind/");
 		input.addEventListener("focus", () => void loadPagefind().catch(() => undefined), { once: true });
 		input.addEventListener("input", () => {
 			window.clearTimeout(debounceTimer);
-			const query = input.value.trim();
-			if (query) void loadPagefind().then((pagefind) => pagefind.preload(query)).catch(() => undefined);
+			requestId++;
+			detailBusy = false;
+			more.hidden = true;
+			retry.hidden = true;
 			debounceTimer = window.setTimeout(() => void search(input.value), 180);
+		});
+
+		more.addEventListener("click", () => {
+			const activeRequest = requestId;
+			void showBatch(activeRequest, true).catch(() => {
+				if (activeRequest !== requestId) return;
+				status.textContent = "More results could not load. Use Load more results to retry.";
+			});
+		});
+		retry.addEventListener("click", () => {
+			void search(input.value);
 		});
 
 		const initialQuery = new URL(window.location.href).searchParams.get("q") ?? "";

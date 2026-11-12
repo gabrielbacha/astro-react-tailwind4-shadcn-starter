@@ -1,0 +1,11 @@
+{
+	"source": "astro-react-tailwind4-shadcn-starter/template-maintenance/site-contract.ts",
+	"version": "1",
+	"sha256": "00f122dcbe0a9642f975cadacc6b9a64161644bc0eacd757fc857e51ea6d2640",
+	"companions": {
+		"scripts/check-built.mjs": "b020480ceb74b6d2bd93106d68f5c9989e9d3c2f081517d69b1391fddb0370b0",
+		"scripts/serve-built.mjs": "e06ecd3afb16ee9279f35933beb1de8523a20b15c451ae00efe128b1bc87d304",
+		".github/workflows/deploy.yml": "e6c987797e75bd6ad7a08ce2d0f1875732edcb9e70043de979d73b7bf17443e5"
+	},
+	"update": "node scripts/update-template-contracts.mjs in the owning starter checkout"
+}

@@ -1,9 +1,11 @@
 import { getCollection, type CollectionEntry } from "astro:content";
 
 import { siteConfig } from "@/config/site";
+import { calendarDate, tagSlug } from "@/lib/shared/site-contract";
 import { getAssetPath } from "@/lib/utils";
 
 import { contentSiteConfig } from "../config";
+import { validateContentRoutes } from "./route-contract";
 
 export type BlogEntry = CollectionEntry<"blog">;
 
@@ -46,11 +48,7 @@ export function getFeedPath() {
 }
 
 export function formatPostDate(date: Date) {
-	return new Intl.DateTimeFormat(siteConfig.language, {
-		day: "2-digit",
-		month: "short",
-		year: "numeric",
-	}).format(date);
+	return calendarDate(date, siteConfig.language, { day: "2-digit", month: "short", year: "numeric" });
 }
 
 export function getReadingTime(post: BlogEntry) {
@@ -63,29 +61,29 @@ export function getReadingTime(post: BlogEntry) {
 }
 
 export function slugifyTag(tag: string) {
-	const slug = tag
-		.trim()
-		.normalize("NFKD")
-		.replace(/\p{Mark}/gu, "")
-		.toLocaleLowerCase()
-		.replace(/&/g, " and ")
-		.replace(/[^\p{Letter}\p{Number}]+/gu, "-")
-		.replace(/^-+|-+$/g, "");
-
-	if (!slug) {
-		throw new Error(`Tag "${tag}" cannot be converted into a URL slug.`);
-	}
-
-	return slug;
+	return tagSlug(tag);
 }
-
-export async function getVisiblePosts() {
-	const now = new Date();
-	const posts = await getCollection(contentSiteConfig.collection, ({ data }) => {
-		return !import.meta.env.PROD || (!data.draft && data.publishedAt <= now);
-	});
-
-	return posts.toSorted((left, right) => right.data.publishedAt.getTime() - left.data.publishedAt.getTime());
+let visibleSnapshot: Promise<BlogEntry[]> | undefined;
+const publicationCutoff = new Date(import.meta.env.PUBLICATION_CUTOFF);
+export function getVisiblePosts() {
+	if (!visibleSnapshot)
+		visibleSnapshot = (async () => {
+			const posts = await getCollection(
+				contentSiteConfig.collection,
+				({ data }) => !import.meta.env.PROD || (!data.draft && data.publishedAt <= publicationCutoff),
+			);
+			const sorted = posts.toSorted(
+				(left, right) =>
+					right.data.publishedAt.getTime() - left.data.publishedAt.getTime() || left.id.localeCompare(right.id),
+			);
+			validateContentRoutes(
+				sorted,
+				createTagGroups(sorted).map((group) => group.slug),
+				contentSiteConfig.pageSize,
+			);
+			return sorted;
+		})();
+	return visibleSnapshot;
 }
 
 export function createTagGroups(posts: BlogEntry[]) {

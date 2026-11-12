@@ -9,8 +9,8 @@ A statically generated Astro coming-soon starter: Astro 7 + React 19 (islands on
 ## Commands
 
 - `pnpm dev` — dev server at http://localhost:4321
-- `pnpm build` — runs `astro check` then `astro build`
-- `pnpm check` — read-only gate: format check → lint → typecheck. **Run this before finishing any change.**
+- `pnpm build` — runs `astro build` and indexes its completed output with Pagefind
+- `pnpm check` — read-only gate: format check → lint → typecheck → unit contracts. **Run this before finishing any change.**
 - `pnpm fix` — auto-apply formatting and lint fixes
 - `pnpm typecheck` — `astro check` on its own
 

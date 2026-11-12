@@ -1,9 +1,11 @@
 import * as p from "@clack/prompts";
 import { spawnSync } from "node:child_process";
 import { constants } from "node:fs";
-import { access, readdir, readFile, rename, rm, stat, writeFile } from "node:fs/promises";
+import { access, readdir, readFile, rm, stat, writeFile } from "node:fs/promises";
 import { basename, dirname, join, relative, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
+
+import { assertStandaloneGit, resetGitHistory as replaceHistory } from "./lib/reset-git-history.mjs";
 
 const scriptPath = fileURLToPath(import.meta.url);
 const root = resolve(dirname(scriptPath), "..");
@@ -13,6 +15,7 @@ const siteConfigPath = join(root, "src/config/site.ts");
 const readmePath = join(root, "README.md");
 const contentPath = join(root, "src/features/content-site/content");
 const gitPath = join(root, ".git");
+const historyHelperPath = join(root, "scripts/lib/reset-git-history.mjs");
 
 const siteIdentityPattern = /\t\/\/ project-init:start\n[\s\S]*?\t\/\/ project-init:end\n/;
 const readmeInitializerPattern = /\n?<!-- project-init:start -->[\s\S]*?<!-- project-init:end -->\n?/;
@@ -148,7 +151,15 @@ async function preflight() {
 	if (authorFiles.length === 0)
 		throw new Error(`Expected at least one exact ${JSON.stringify(sampleAuthor)} placeholder.`);
 
-	const requiredPaths = [packagePath, lockfilePath, siteConfigPath, readmePath, scriptPath, ...authorFiles];
+	const requiredPaths = [
+		packagePath,
+		lockfilePath,
+		siteConfigPath,
+		readmePath,
+		scriptPath,
+		historyHelperPath,
+		...authorFiles,
+	];
 	for (const path of requiredPaths) {
 		await access(path, constants.R_OK | constants.W_OK);
 	}
@@ -176,6 +187,7 @@ async function preflight() {
 	}
 
 	const hasGit = await pathExists(gitPath);
+	await assertStandaloneGit(root, hasGit);
 	if (hasGit) {
 		const topLevel = run("git", ["rev-parse", "--show-toplevel"], { capture: true });
 		if (resolve(topLevel) !== root) throw new Error("Run the initializer from the boilerplate repository root.");
@@ -300,6 +312,7 @@ async function removeInitializer() {
 	delete packageJson.devDependencies["@clack/prompts"];
 	await writeFile(packagePath, `${JSON.stringify(packageJson, null, "\t")}\n`);
 	await rm(scriptPath);
+	await rm(historyHelperPath);
 	runPnpm(["install", "--lockfile-only", "--ignore-scripts", "--offline"], { capture: true });
 
 	const lockfile = await readFile(lockfilePath, "utf8");
@@ -320,31 +333,16 @@ function runChecks() {
 	runPnpm(["exec", "astro", "check"], { capture: true });
 }
 
-async function resetGitHistory({ gitEmail, gitName, hasGit, keepUpstream, originUrl }, originals) {
-	const backupPath = join(dirname(root), `.${basename(root)}-git-backup-${process.pid}-${Date.now()}`);
-
-	try {
-		if (hasGit) await rename(gitPath, backupPath);
-		run("git", ["init", "-b", "main"]);
-		run("git", ["config", "user.name", gitName]);
-		run("git", ["config", "user.email", gitEmail]);
-		if (keepUpstream && originUrl) run("git", ["remote", "add", "upstream", originUrl]);
-		runPnpm(["exec", "lefthook", "install"]);
-		run("git", ["add", "--all"]);
-		run("git", ["commit", "-m", "Initial commit"]);
-		if (run("git", ["status", "--porcelain"], { capture: true })) {
-			throw new Error("The new repository is unexpectedly dirty after the initial commit.");
-		}
-		if (hasGit) await rm(backupPath, { recursive: true, force: true });
-	} catch (error) {
-		await rm(gitPath, { recursive: true, force: true });
-		if (hasGit && (await pathExists(backupPath))) await rename(backupPath, gitPath);
-		await restoreOriginals(originals);
-		throw new Error(
-			`Could not create the fresh Git history; the original files and history were restored. ${error instanceof Error ? error.message : String(error)}`,
-			{ cause: error },
-		);
-	}
+async function resetGitHistory(repository, originals) {
+	return replaceHistory({
+		root,
+		repository,
+		originals,
+		restoreOriginals,
+		run,
+		runPnpm,
+		warn: (message) => p.note(message, "Git recovery copy"),
+	});
 }
 
 async function main() {
@@ -388,7 +386,15 @@ async function main() {
 		return;
 	}
 
-	const affectedPaths = [packagePath, lockfilePath, siteConfigPath, readmePath, scriptPath, ...repository.authorFiles];
+	const affectedPaths = [
+		packagePath,
+		lockfilePath,
+		siteConfigPath,
+		readmePath,
+		scriptPath,
+		historyHelperPath,
+		...repository.authorFiles,
+	];
 	const originals = await readOriginals(affectedPaths);
 	const spinner = p.spinner();
 

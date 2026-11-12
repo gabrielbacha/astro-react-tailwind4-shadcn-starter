@@ -8,26 +8,24 @@ const socialLinks = [
 ].filter((link): link is { href: string; label: string } => Boolean(link.href));
 ---
 
-<footer class="border-border/70 border-t pt-6 pb-[max(1.5rem,env(safe-area-inset-bottom))]">
+<footer class="border-t border-border/70 pt-6 pb-[max(1.5rem,env(safe-area-inset-bottom))]">
 	<div class="mx-auto flex w-full max-w-7xl flex-col items-center justify-between gap-4 px-4 text-center sm:px-6 md:flex-row md:text-left lg:px-8">
-		<p class="text-muted-foreground text-xs md:text-sm">
+		<p class="text-xs text-muted-foreground md:text-sm">
 			&copy; {year} <span translate="no">{siteConfig.name}</span>
 		</p>
-		{
-			socialLinks.length > 0 && (
-				<nav aria-label="Social links" class="flex flex-wrap items-center justify-center gap-x-6 gap-y-2">
-					{socialLinks.map(({ href, label }) => (
-						<a
-							href={href}
-							target="_blank"
-							rel="noopener noreferrer"
-							class="text-muted-foreground focus-visible:ring-ring rounded-sm text-sm transition-colors hover:text-foreground focus-visible:ring-2 focus-visible:ring-offset-4 focus-visible:outline-none"
-						>
-							{label}
-						</a>
-					))}
-				</nav>
-			)
-		}
+		{socialLinks.length > 0 && (
+			<nav aria-label="Social links" class="flex flex-wrap items-center justify-center gap-x-6 gap-y-2">
+				{socialLinks.map(({ href, label }) => (
+					<a
+						href={href}
+						target="_blank"
+						rel="noopener noreferrer"
+						class="rounded-sm text-sm text-muted-foreground transition-colors hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-4 focus-visible:outline-none"
+					>
+						{label}
+					</a>
+				))}
+			</nav>
+		)}
 	</div>
 </footer>
